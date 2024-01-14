@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvPageList, Vcl.ComCtrls,
   JvExComCtrls, JvPageListTreeView, Vcl.StdCtrls, ScrPosF, JvComponentBase,
-  JvBalloonHint, Vcl.ExtCtrls, Vcl.CheckLst;
+  JvBalloonHint, Vcl.ExtCtrls, Vcl.CheckLst, Vcl.Samples.Spin;
 
 type
   TSettingsForm = class(TForm)
@@ -61,6 +61,7 @@ type
     SsnDirOpenInExplorerBtn: TButton;
     SsnDirJvBalloonHint: TJvBalloonHint;
     PauseForRemoveFrameCheckBox: TCheckBox;
+    CntDwnSpinEdit: TSpinEdit;
     procedure SetDefaultScreenBtnClick(Sender: TObject);
     procedure SetAlomstFullScreenBtnClick(Sender: TObject);
     procedure SavFrmSizChkBoxClick(Sender: TObject);
@@ -97,6 +98,7 @@ type
     procedure SsnDirCopyToClpBrdBtnClick(Sender: TObject);
     procedure SsnDirOpenInExplorerBtnClick(Sender: TObject);
     procedure PauseForRemoveFrameCheckBoxClick(Sender: TObject);
+    procedure CntDwnSpinEditChange(Sender: TObject);
   private
     procedure OpenDirectory(DirectoryName: String);
     procedure ListToForm(PositionB, SizeB: Boolean);
@@ -275,6 +277,11 @@ end;
 procedure TSettingsForm.AutoStartPingingCheckBoxClick(Sender: TObject);
 begin
   AutoStartPinging := AutoStartPingingCheckBox.Checked;
+end;
+
+procedure TSettingsForm.CntDwnSpinEditChange(Sender: TObject);
+begin
+  CntDwnFrm := CntDwnSpinEdit.Value;
 end;
 
 procedure TSettingsForm.ConvertToLCCheckBoxClick(Sender: TObject);

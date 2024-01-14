@@ -8,9 +8,8 @@ http://delphi.about.com/od/formsdialogs/a/fadeinmodalform.htm
 ~Zarko Gajic
 }
 
-uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  Buttons, ExtCtrls, pngimage, JvExStdCtrls, JvButton, JvCtrls, ImgList,
-  JvComponentBase, JvBalloonHint, System.ImageList, System.UITypes;
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, Buttons,
+  ExtCtrls, System.ImageList, System.UITypes, Vcl.Imaging.pngimage, Vcl.ImgList;
 
 type
   TFadeType = (ftIn, ftOut);
@@ -26,14 +25,20 @@ type
     CompilerLbl: TLabel;
     OKBtn: TButton;
     ImageList: TImageList;
-    JvBalloonHint: TJvBalloonHint;
+    MajorGeeksLbl: TLabel;
+    SourceForgeLbl: TLabel;
     procedure fadeTimerTimer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure MajorGeeksLblMouseEnter(Sender: TObject);
+    procedure MajorGeeksLblMouseLeave(Sender: TObject);
+    procedure SourceForgeLblMouseEnter(Sender: TObject);
+    procedure SourceForgeLblMouseLeave(Sender: TObject);
+    procedure MajorGeeksLblDblClick(Sender: TObject);
+    procedure SourceForgeLblDblClick(Sender: TObject);
   private
 
     fFadeType: TFadeType;
-    procedure OpenDirectory(DirectoryName: String);
     procedure InitAboutBox;
     property FadeType: TFadeType read fFadeType write fFadeType;
   public
@@ -41,34 +46,13 @@ type
   end;
 
 var
-  FAboutInitialized, lclInstalled: Boolean;
-  CFPUHostName, CFPUUserName, CFPUPassWord, CFPUAppName: String;
-  CFPUProtocol: Integer;
+  FAboutInitialized: Boolean;
 
 implementation
 
-uses UtlUnit, PerlRegEx, ShellApi, ClipBrd, IniFiles, MFUnit, Dialogs, IMUnit;
+uses UtlUnit, ShellApi, MFUnit, Dialogs, IMUnit;
 
 {$R *.dfm}
-
-function FileNameToVersionStr(FileNameStr: String): String;
-var
-  Regex: TPerlRegEx;
-  Words: TStringList;
-begin
-  Regex := TPerlRegEx.Create;
-  Regex.RegEx := '([0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2})';
-  Regex.Options := [];
-  Regex.Subject := AnsiToUTF8(FileNameStr);
-  if Regex.Match then
-  begin
-    Words := TStringList.Create;
-    Parse(Utf8ToAnsi(Regex.MatchedText), '.', Words);
-    Result := LPad(Words[0], 3, '0') + LPad(Words[1], 3, '0') + LPad(Words[2], 3, '0') + LPad(Words[3], 3, '0');
-    Words.Free;
-  end;
-  Regex.Free;
-end;
 
 class function TAboutBox.Execute: TModalResult;
 begin
@@ -135,21 +119,8 @@ begin
   InitAboutBox;
 end;
 
-procedure TAboutBox.OpenDirectory(DirectoryName: String);
-begin
-  ShellExecute(Application.Handle,
-    nil,
-    'explorer.exe',
-    PChar(DirectoryName), //wherever you want the window to open to
-    nil,
-    SW_NORMAL     //see other possibilities by ctrl+clicking on SW_NORMAL
-    );
-end;
-
 procedure TAboutBox.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  //cancel hint before closing form
-  JvBalloonHint.CancelHint;
   //no close before we fade away
   if FadeType = ftIn then
   begin
@@ -162,6 +133,42 @@ begin
   begin
     CanClose := True;
   end;
+end;
+
+procedure TAboutBox.MajorGeeksLblDblClick(Sender: TObject);
+var
+  URL: string;
+begin
+  URL := 'https://www.majorgeeks.com/files/details/pingframes.html';
+  ShellExecute(0, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TAboutBox.MajorGeeksLblMouseEnter(Sender: TObject);
+begin
+  MajorGeeksLbl.Font.Style := [fsUnderline];
+end;
+
+procedure TAboutBox.MajorGeeksLblMouseLeave(Sender: TObject);
+begin
+  MajorGeeksLbl.Font.Style := [];
+end;
+
+procedure TAboutBox.SourceForgeLblDblClick(Sender: TObject);
+var
+  URL: string;
+begin
+  URL := 'https://sourceforge.net/projects/pingframes/';
+  ShellExecute(0, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TAboutBox.SourceForgeLblMouseEnter(Sender: TObject);
+begin
+  SourceForgeLbl.Font.Style := [fsUnderline];
+end;
+
+procedure TAboutBox.SourceForgeLblMouseLeave(Sender: TObject);
+begin
+  SourceForgeLbl.Font.Style := [];
 end;
 
 end.

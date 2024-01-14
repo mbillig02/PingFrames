@@ -6,16 +6,16 @@ object PingFrame: TPingFrame
   TabOrder = 0
   object BottomPanel: TPanel
     Left = 0
-    Top = 25
+    Top = 21
     Width = 454
-    Height = 84
+    Height = 88
     Align = alClient
     Caption = 'BottomPanel'
     TabOrder = 1
     object Splitter: TSplitter
       Left = 365
       Top = 1
-      Height = 82
+      Height = 86
       Align = alRight
       Visible = False
       ExplicitLeft = 16
@@ -26,7 +26,7 @@ object PingFrame: TPingFrame
       Left = 1
       Top = 1
       Width = 364
-      Height = 82
+      Height = 86
       Legend.Visible = False
       Title.Text.Strings = (
         'TChart')
@@ -39,7 +39,7 @@ object PingFrame: TPingFrame
       TabOrder = 0
       DesignSize = (
         364
-        82)
+        86)
       DefaultCanvas = 'TGDIPlusCanvas'
       ColorPaletteIndex = 13
       object ToggleBRPnl: TPanel
@@ -56,7 +56,7 @@ object PingFrame: TPingFrame
       end
       object ClearChartPnl: TPanel
         Left = 0
-        Top = 68
+        Top = 72
         Width = 10
         Height = 11
         Anchors = [akLeft, akBottom]
@@ -83,13 +83,13 @@ object PingFrame: TPingFrame
       Left = 368
       Top = 1
       Width = 85
-      Height = 82
+      Height = 86
       Align = alRight
       TabOrder = 1
       Visible = False
       DesignSize = (
         85
-        82)
+        86)
       object TimeoutsLbl: TLabel
         Left = 0
         Top = 2
@@ -104,13 +104,14 @@ object PingFrame: TPingFrame
       end
       object PointsLbl: TLabel
         Left = 0
-        Top = 64
+        Top = 68
         Width = 85
         Height = 15
         Alignment = taCenter
         Anchors = [akLeft, akBottom]
         AutoSize = False
         Caption = 'Points: 0'
+        ExplicitTop = 64
       end
       object TimeSinceLastTimeoutLbl: TLabel
         Left = 8
@@ -138,18 +139,16 @@ object PingFrame: TPingFrame
     Left = 0
     Top = 0
     Width = 454
-    Height = 25
+    Height = 21
     Align = alTop
     TabOrder = 0
-    DesignSize = (
-      454
-      25)
     object ContinuousPingSpdBtn: TSpeedButton
       Tag = 1
-      Left = 0
-      Top = 0
+      Left = 1
+      Top = 1
       Width = 35
-      Height = 23
+      Height = 19
+      Align = alLeft
       AllowAllUp = True
       GroupIndex = 1
       Caption = 'Start'
@@ -161,57 +160,149 @@ object PingFrame: TPingFrame
       ParentFont = False
       Transparent = False
       OnClick = ContinuousPingSpdBtnClick
-    end
-    object StatusLbl: TLabel
-      Left = 207
-      Top = 5
-      Width = 175
-      Height = 15
-      Alignment = taCenter
-      Anchors = [akTop, akRight]
-      AutoSize = False
-      Caption = 'Low: -  Avg: -  High: -'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitHeight = 23
     end
     object ThreadInProgressLbl: TLabel
-      Left = 390
-      Top = 5
-      Width = 5
-      Height = 15
-      Anchors = [akTop, akRight]
+      Left = 388
+      Top = 1
+      Width = 10
+      Height = 19
+      Align = alRight
+      Alignment = taCenter
+      AutoSize = False
       Caption = '-'
+      Layout = tlCenter
       OnClick = ThreadInProgressLblClick
+      ExplicitLeft = 387
     end
     object IPAddressLbl: TLabel
-      Left = 120
-      Top = 5
+      Left = 116
+      Top = 1
       Width = 82
-      Height = 15
+      Height = 19
+      Align = alRight
       Alignment = taCenter
-      Anchors = [akTop, akRight]
       AutoSize = False
       Caption = '0.0.0.0'
+      Layout = tlCenter
+      ExplicitLeft = 100
+      ExplicitTop = 5
+      ExplicitHeight = 15
+    end
+    object StatusLbl: TLabel
+      Left = 208
+      Top = 1
+      Width = 175
+      Height = 19
+      Align = alRight
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Low: -  Avg: -  High: -'
+      Layout = tlCenter
+      ExplicitLeft = 175
+      ExplicitTop = 5
+      ExplicitHeight = 15
     end
     object SpinEdit: TSpinEdit
-      Left = 400
-      Top = 2
-      Width = 51
+      Left = 241
+      Top = -2
+      Width = 50
       Height = 24
-      Anchors = [akTop, akRight]
-      Increment = 5
-      MaxValue = 300
-      MinValue = 5
-      TabOrder = 0
-      Value = 180
+      MaxValue = 0
+      MinValue = 0
+      TabOrder = 7
+      Value = 0
+      Visible = False
     end
     object HostEdit: TEdit
-      Left = 40
-      Top = 2
+      Left = 36
+      Top = 1
       Width = 75
-      Height = 23
+      Height = 19
+      Align = alClient
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 1
+      TabOrder = 0
       Text = 'LocalHost'
+      ExplicitHeight = 23
+    end
+    object SpacerPnl4: TPanel
+      Left = 398
+      Top = 1
+      Width = 10
+      Height = 19
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 1
+    end
+    object SpacerPnl3: TPanel
+      Left = 383
+      Top = 1
+      Width = 5
+      Height = 19
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 2
+    end
+    object SpacerPnl2: TPanel
+      Left = 198
+      Top = 1
+      Width = 10
+      Height = 19
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 3
+    end
+    object PointsSpinBtn: TSpinButton
+      Left = 438
+      Top = 1
+      Width = 15
+      Height = 19
+      Align = alRight
+      DownGlyph.Data = {
+        0E010000424D0E01000000000000360000002800000009000000060000000100
+        200000000000D800000000000000000000000000000000000000008080000080
+        8000008080000080800000808000008080000080800000808000008080000080
+        8000008080000080800000808000000000000080800000808000008080000080
+        8000008080000080800000808000000000000000000000000000008080000080
+        8000008080000080800000808000000000000000000000000000000000000000
+        0000008080000080800000808000000000000000000000000000000000000000
+        0000000000000000000000808000008080000080800000808000008080000080
+        800000808000008080000080800000808000}
+      TabOrder = 5
+      UpGlyph.Data = {
+        0E010000424D0E01000000000000360000002800000009000000060000000100
+        200000000000D800000000000000000000000000000000000000008080000080
+        8000008080000080800000808000008080000080800000808000008080000080
+        8000000000000000000000000000000000000000000000000000000000000080
+        8000008080000080800000000000000000000000000000000000000000000080
+        8000008080000080800000808000008080000000000000000000000000000080
+        8000008080000080800000808000008080000080800000808000000000000080
+        8000008080000080800000808000008080000080800000808000008080000080
+        800000808000008080000080800000808000}
+      OnDownClick = PointsSpinBtnDownClick
+      OnUpClick = PointsSpinBtnUpClick
+    end
+    object PointsEdit: TEdit
+      Left = 408
+      Top = 1
+      Width = 30
+      Height = 19
+      Align = alRight
+      NumbersOnly = True
+      TabOrder = 6
+      Text = '180'
+      ExplicitHeight = 23
+    end
+    object SpacerPnl1: TPanel
+      Left = 111
+      Top = 1
+      Width = 5
+      Height = 19
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 4
     end
   end
   object PingTimer: TTimer

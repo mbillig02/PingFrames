@@ -29,7 +29,6 @@ type
     ContinuousPingSpdBtn: TSpeedButton;
     PingTimer: TTimer;
     StatusLbl: TLabel;
-    SpinEdit: TSpinEdit;
     ThreadInProgressLbl: TLabel;
     IPAddressLbl: TLabel;
     HostEdit: TEdit;
@@ -43,6 +42,13 @@ type
     ClearChartPnl: TPanel;
     PointsLbl: TLabel;
     TimeSinceLastTimeoutLbl: TLabel;
+    SpacerPnl4: TPanel;
+    SpacerPnl3: TPanel;
+    SpacerPnl2: TPanel;
+    SpacerPnl1: TPanel;
+    PointsSpinBtn: TSpinButton;
+    PointsEdit: TEdit;
+    SpinEdit: TSpinEdit;
     procedure ContinuousPingSpdBtnClick(Sender: TObject);
     procedure PingTimerTimer(Sender: TObject);
     procedure ToggleBRPnlClick(Sender: TObject);
@@ -51,6 +57,8 @@ type
     procedure TimeoutsLblMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ThreadInProgressLblClick(Sender: TObject);
+    procedure PointsSpinBtnUpClick(Sender: TObject);
+    procedure PointsSpinBtnDownClick(Sender: TObject);
   private
     ClearChart: Boolean;
     procedure DoPingThread(PingThreadId: Integer; HostToPing: String);
@@ -88,10 +96,27 @@ begin
   WSocket.DnsLookup(HostEdit.Text);
 end;
 
+procedure TPingFrame.PointsSpinBtnDownClick(Sender: TObject);
+var
+  TmpInt: Integer;
+begin
+  TmpInt := StrToIntDef(PointsEdit.Text, 1);
+  if TmpInt < 6 then PointsEdit.Text := '1' else PointsEdit.Text := IntToStr(TmpInt - 5);
+end;
+
+procedure TPingFrame.PointsSpinBtnUpClick(Sender: TObject);
+var
+  TmpInt: Integer;
+begin
+  TmpInt := StrToIntDef(PointsEdit.Text, 1);
+  if TmpInt > 295 then PointsEdit.Text := '300' else PointsEdit.Text := IntToStr(TmpInt + 5);
+end;
+
 procedure TPingFrame.WSocketDnsLookupDone(Sender: TObject; ErrCode: Word);
 begin
   if ErrCode = 0 then
   begin
+    IPAddressLbl.Caption := WSocket.DnsResult;
     DoPingThread(1, WSocket.DnsResult);
   end
   else
@@ -205,7 +230,7 @@ var
   Time1, Time2: TTime;
 begin
 // this event is thread safe, all publics from the thread are available here
-  while PingChart.Series[0].Count >= SpinEdit.Value do PingChart.Series[0].Delete(0);
+  while PingChart.Series[0].Count >= StrToIntDef(PointsEdit.Text, 1) do PingChart.Series[0].Delete(0);
   with Sender as TPingThread do
   begin
     if ReplyTotal <> 0 then

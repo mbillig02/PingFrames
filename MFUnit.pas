@@ -703,7 +703,7 @@ begin
     for i := 0 to Length(PingFrameA1) - 1 do
     begin
       RegIniFile.WriteString('Frame_' + IntToStr(i), 'HostEditText', PingFrameA1[i].HostEdit.Text);
-      RegIniFile.WriteInteger('Frame_' + IntToStr(i), 'SpinEditValue', PingFrameA1[i].SpinEdit.Value);
+      RegIniFile.WriteInteger('Frame_' + IntToStr(i), 'SpinEditValue', StrToIntDef(PingFrameA1[i].PointsEdit.Text, 1));
       RegIniFile.WriteBool('Frame_' + IntToStr(i), 'BottomRightPanelVisible', PingFrameA1[i].BottomRightPanel.Visible);
       RegIniFile.WriteBool('Frame_' + IntToStr(i), 'AutoStart', PingFrameA1[i].ContinuousPingSpdBtn.Down);
     end;
@@ -712,7 +712,7 @@ begin
       for i := 0 to Length(PingFrameA2) - 1 do
       begin
         RegIniFile.WriteString('Frame2_' + IntToStr(i), 'HostEditText', PingFrameA2[i].HostEdit.Text);
-        RegIniFile.WriteInteger('Frame2_' + IntToStr(i), 'SpinEditValue', PingFrameA2[i].SpinEdit.Value);
+        RegIniFile.WriteInteger('Frame2_' + IntToStr(i), 'SpinEditValue', StrToIntDef(PingFrameA2[i].PointsEdit.Text, 1));
         RegIniFile.WriteBool('Frame2_' + IntToStr(i), 'BottomRightPanelVisible', PingFrameA2[i].BottomRightPanel.Visible);
         RegIniFile.WriteBool('Frame2_' + IntToStr(i), 'AutoStart', PingFrameA2[i].ContinuousPingSpdBtn.Down);
       end;
@@ -760,7 +760,7 @@ begin
     begin
       AddPingFrame1;
       PingFrameA1[i].HostEdit.Text := RegIniFile.ReadString('Frame_' + IntToStr(i), 'HostEditText', 'LocalHost');
-      PingFrameA1[i].SpinEdit.Value := RegIniFile.ReadInteger('Frame_' + IntToStr(i), 'SpinEditValue', 180);
+      PingFrameA1[i].PointsEdit.Text := IntToStr(RegIniFile.ReadInteger('Frame_' + IntToStr(i), 'SpinEditValue', 180));
       PingFrameA1[i].BottomRightPanel.Visible := RegIniFile.ReadBool('Frame_' + IntToStr(i), 'BottomRightPanelVisible', False);
       AutoStart := RegIniFile.ReadBool('Frame_' + IntToStr(i), 'AutoStart', False);
       if AutoStart then
@@ -776,7 +776,7 @@ begin
     begin
       AddPingFrame2;
       PingFrameA2[i].HostEdit.Text := RegIniFile.ReadString('Frame2_' + IntToStr(i), 'HostEditText', 'LocalHost');
-      PingFrameA2[i].SpinEdit.Value := RegIniFile.ReadInteger('Frame2_' + IntToStr(i), 'SpinEditValue', 180);
+      PingFrameA2[i].PointsEdit.Text := IntToStr(RegIniFile.ReadInteger('Frame2_' + IntToStr(i), 'SpinEditValue', 180));
       PingFrameA2[i].BottomRightPanel.Visible := RegIniFile.ReadBool('Frame2_' + IntToStr(i), 'BottomRightPanelVisible', False);
       AutoStart := RegIniFile.ReadBool('Frame2_' + IntToStr(i), 'AutoStart', False);
       if AutoStart then
@@ -1306,6 +1306,7 @@ begin
   SettingsForm.ConvertToLCCheckBox.Checked := ConvertToLC;
   SettingsForm.ConvertToUCCheckBox.Checked := ConvertToUC;
   SettingsForm.PauseForRemoveFrameCheckBox.Checked := PauseForRemoveFrame;
+  SettingsForm.CntDwnSpinEdit.Value := CntDwnFrm;
 
 //  SettingsForm.Top := MainForm.Top; SettingsForm.Left := MainForm.Left + MainForm.Width;
   if MainForm.Left + MainForm.Width + SettingsForm.Width < Screen.WorkAreaWidth then
@@ -1778,6 +1779,7 @@ var
   Caller: TObject;
   TempFrameName: String;
   i, FrameToDelete: Integer;
+  ActivePingsB: Boolean;
 begin
   Caller := ((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent;
   TempFrameName := (Caller as TFrame).Name;
@@ -1785,15 +1787,20 @@ begin
   for i := 0 to High(PingFrameA2) do if PingFrameA2[i].Name = TempFrameName then FrameToDelete := i;
   if Assigned(PingFrameA2[FrameToDelete]) then
   begin
+    ActivePingsB := False;
     if PingFrameA2[FrameToDelete].ContinuousPingSpdBtn.Down then
     begin
       PingFrameA2[FrameToDelete].ContinuousPingSpdBtn.Down := False;
       PingFrameA2[FrameToDelete].ContinuousPingSpdBtnClick(nil);
+      ActivePingsB := True;
     end;
     Repeat
       Application.ProcessMessages;
       Sleep(TimeToWait);
-    Until PingFrameA2[FrameToDelete].ThreadInProgressLbl.Caption = '-' ;
+    Until PingFrameA2[FrameToDelete].ThreadInProgressLbl.Caption = '-';
+    if PauseForRemoveFrame and ActivePingsB then
+      MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Continue'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
+    PingFrameA2[FrameToDelete].ThreadInProgressLbl.Caption := '-';
     PingFrameA2[FrameToDelete].Free;
     PingFrameA2[FrameToDelete] := nil;
   end;
@@ -1818,6 +1825,7 @@ var
   Caller: TObject;
   TempFrameName: String;
   i, FrameToDelete: Integer;
+  ActivePingsB: Boolean;
 begin
   Caller := ((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent;
   TempFrameName := (Caller as TFrame).Name;
@@ -1825,15 +1833,20 @@ begin
   for i := 0 to High(PingFrameA1) do if PingFrameA1[i].Name = TempFrameName then FrameToDelete := i;
   if Assigned(PingFrameA1[FrameToDelete]) then
   begin
+    ActivePingsB := False;
     if PingFrameA1[FrameToDelete].ContinuousPingSpdBtn.Down then
     begin
       PingFrameA1[FrameToDelete].ContinuousPingSpdBtn.Down := False;
       PingFrameA1[FrameToDelete].ContinuousPingSpdBtnClick(nil);
+      ActivePingsB := True;
     end;
     Repeat
       Application.ProcessMessages;
       Sleep(TimeToWait);
-    Until PingFrameA1[FrameToDelete].ThreadInProgressLbl.Caption = '-' ;
+    Until PingFrameA1[FrameToDelete].ThreadInProgressLbl.Caption = '-';
+    if PauseForRemoveFrame and ActivePingsB then
+      MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Continue'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
+    PingFrameA1[FrameToDelete].ThreadInProgressLbl.Caption := '-';
     PingFrameA1[FrameToDelete].Free;
     PingFrameA1[FrameToDelete] := nil;
   end;
@@ -2296,11 +2309,6 @@ begin
     RegIniFile.WriteInteger('Section-Window', 'Left', MainForm.Left);
     RegIniFile.WriteInteger('Section-Window', 'Height', MainForm.Height);
     RegIniFile.WriteInteger('Section-Window', 'Width', MainForm.Width);
-
-    RegIniFile.WriteString('Section-Update', 'FtpHostName', CFPUHostName);
-    RegIniFile.WriteString('Section-Update', 'FtpUserName', CFPUUserName);
-    RegIniFile.WriteString('Section-Update', 'FtpPassWord', CFPUPassWord);
-    RegIniFile.WriteString('Section-Update', 'AppName', CFPUAppName);
 {
     RegIniFile.WriteInteger('Section-Window', 'SelectFileTop', SelectFileDlg.Top);
     RegIniFile.WriteInteger('Section-Window', 'SelectFileLeft', SelectFileDlg.Left);

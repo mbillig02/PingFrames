@@ -21,8 +21,6 @@ object SettingsForm: TSettingsForm
     ActivePage = JvStandardPageMisc
     PropagateEnable = False
     Align = alClient
-    ExplicitWidth = 355
-    ExplicitHeight = 325
     object JvStandardPageStyles: TJvStandardPage
       Left = 0
       Top = 0
@@ -357,8 +355,6 @@ object SettingsForm: TSettingsForm
       Width = 359
       Height = 326
       Caption = 'JvStandardPageMisc'
-      ExplicitWidth = 355
-      ExplicitHeight = 325
       object AutoStartPingingCheckBox: TCheckBox
         Left = 24
         Top = 26
@@ -411,6 +407,17 @@ object SettingsForm: TSettingsForm
         Caption = 'Pause For Remove Frame'
         TabOrder = 3
         OnClick = PauseForRemoveFrameCheckBoxClick
+      end
+      object CntDwnSpinEdit: TSpinEdit
+        Left = 175
+        Top = 154
+        Width = 49
+        Height = 22
+        MaxValue = 10
+        MinValue = 1
+        TabOrder = 4
+        Value = 10
+        OnChange = CntDwnSpinEditChange
       end
     end
   end

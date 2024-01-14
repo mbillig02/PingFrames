@@ -18,6 +18,26 @@ object AboutBox: TAboutBox
     290
     150)
   TextHeight = 13
+  object MajorGeeksLbl: TLabel
+    Left = 8
+    Top = 117
+    Width = 276
+    Height = 13
+    Caption = 'https://www.majorgeeks.com/files/details/pingframes.html'
+    OnDblClick = MajorGeeksLblDblClick
+    OnMouseEnter = MajorGeeksLblMouseEnter
+    OnMouseLeave = MajorGeeksLblMouseLeave
+  end
+  object SourceForgeLbl: TLabel
+    Left = 8
+    Top = 132
+    Width = 213
+    Height = 13
+    Caption = 'https://sourceforge.net/projects/pingframes/'
+    OnDblClick = SourceForgeLblDblClick
+    OnMouseEnter = SourceForgeLblMouseEnter
+    OnMouseLeave = SourceForgeLblMouseLeave
+  end
   object Panel: TPanel
     Left = 8
     Top = 8
@@ -217,16 +237,16 @@ object AboutBox: TAboutBox
     end
   end
   object OKBtn: TButton
-    Left = 199
-    Top = 120
-    Width = 75
-    Height = 25
+    Left = 244
+    Top = 130
+    Width = 30
+    Height = 18
     Anchors = [akTop, akRight]
     Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 0
-    ExplicitLeft = 195
+    ExplicitLeft = 240
   end
   object fadeTimer: TTimer
     Enabled = False
@@ -509,9 +529,5 @@ object AboutBox: TAboutBox
       001F30CF800F9F8F001F3FCF801FAF1F001F001FC0FFD0FF003F003FC0FFE1FF
       81FFA1FFFFFFFFFF81FFC3FFFFFFFFFF00000000000000000000000000000000
       000000000000}
-  end
-  object JvBalloonHint: TJvBalloonHint
-    Left = 184
-    Top = 16
   end
 end
