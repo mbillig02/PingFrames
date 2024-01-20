@@ -18,9 +18,11 @@ object SettingsForm: TSettingsForm
     Top = 0
     Width = 359
     Height = 326
-    ActivePage = JvStandardPageMisc
+    ActivePage = JvStandardPageForm
     PropagateEnable = False
     Align = alClient
+    ExplicitWidth = 355
+    ExplicitHeight = 325
     object JvStandardPageStyles: TJvStandardPage
       Left = 0
       Top = 0
@@ -205,6 +207,15 @@ object SettingsForm: TSettingsForm
         TabOrder = 8
         OnClickCheck = MainFormSettingsListBoxClickCheck
       end
+      object SaveHostListBoxWidthCheckBox: TCheckBox
+        Left = 17
+        Top = 228
+        Width = 144
+        Height = 17
+        Caption = 'Save HostList Width'
+        TabOrder = 9
+        OnClick = SaveHostListBoxWidthCheckBoxClick
+      end
     end
     object JvStandardPageDirectories: TJvStandardPage
       Left = 0
@@ -355,6 +366,8 @@ object SettingsForm: TSettingsForm
       Width = 359
       Height = 326
       Caption = 'JvStandardPageMisc'
+      ExplicitWidth = 355
+      ExplicitHeight = 325
       object AutoStartPingingCheckBox: TCheckBox
         Left = 24
         Top = 26

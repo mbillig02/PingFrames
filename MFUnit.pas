@@ -311,7 +311,7 @@ var
   ExeDir, DtaDir, TmpDir, LstDir, StyleStr, SsnDir: String;
   MainFormDefaultRect, MainFormRect: TTopLeftHeightWidth;
   SaveFormSize, SaveFormPosition, StylesMM, StylesEnabled, AutoStartPinging,
-  StartTimeoutPnlVisible, ConvertToLC, ConvertToUC, PauseForRemoveFrame: Boolean;
+  StartTimeoutPnlVisible, ConvertToLC, ConvertToUC, PauseForRemoveFrame, SaveHostListBoxWidth: Boolean;
   CntDwnFrm: Integer;
 
 implementation
@@ -1307,6 +1307,7 @@ begin
   SettingsForm.ConvertToUCCheckBox.Checked := ConvertToUC;
   SettingsForm.PauseForRemoveFrameCheckBox.Checked := PauseForRemoveFrame;
   SettingsForm.CntDwnSpinEdit.Value := CntDwnFrm;
+  SettingsForm.SaveHostListBoxWidthCheckBox.Checked := SaveHostListBoxWidth;
 
 //  SettingsForm.Top := MainForm.Top; SettingsForm.Left := MainForm.Left + MainForm.Width;
   if MainForm.Left + MainForm.Width + SettingsForm.Width < Screen.WorkAreaWidth then
@@ -2226,6 +2227,9 @@ begin
       MainFormRect.Width := RegIniFile.ReadInteger('Section-Window', 'Width', MainFormDefaultRect.Width);
     end;
 
+    SaveHostListBoxWidth := RegIniFile.ReadBool('Section-Window', 'SaveHostListWidth', False);
+    if SaveHostListBoxWidth then LeftPanel.Width := RegIniFile.ReadInteger('Section-Window', 'HostListWidth', 158);
+
   finally
     RegIniFile.Free;
   end;
@@ -2337,6 +2341,9 @@ begin
     RegIniFile.WriteInteger('Section-Settings', 'CntDwnFrm', CntDwnFrm);
 
     RegIniFile.WriteInteger('Section-Misc', 'TimeToWait', TimeToWait);
+
+    RegIniFile.WriteBool('Section-Window', 'SaveHostListWidth', SaveHostListBoxWidth );
+    RegIniFile.WriteInteger('Section-Window', 'HostListWidth', LeftPanel.Width);
 
   finally
     RegIniFile.Free;

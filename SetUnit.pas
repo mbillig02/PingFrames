@@ -62,6 +62,7 @@ type
     SsnDirJvBalloonHint: TJvBalloonHint;
     PauseForRemoveFrameCheckBox: TCheckBox;
     CntDwnSpinEdit: TSpinEdit;
+    SaveHostListBoxWidthCheckBox: TCheckBox;
     procedure SetDefaultScreenBtnClick(Sender: TObject);
     procedure SetAlomstFullScreenBtnClick(Sender: TObject);
     procedure SavFrmSizChkBoxClick(Sender: TObject);
@@ -99,6 +100,7 @@ type
     procedure SsnDirOpenInExplorerBtnClick(Sender: TObject);
     procedure PauseForRemoveFrameCheckBoxClick(Sender: TObject);
     procedure CntDwnSpinEditChange(Sender: TObject);
+    procedure SaveHostListBoxWidthCheckBoxClick(Sender: TObject);
   private
     procedure OpenDirectory(DirectoryName: String);
     procedure ListToForm(PositionB, SizeB: Boolean);
@@ -399,6 +401,11 @@ end;
 procedure TSettingsForm.PauseForRemoveFrameCheckBoxClick(Sender: TObject);
 begin
   PauseForRemoveFrame := PauseForRemoveFrameCheckBox.Checked;
+end;
+
+procedure TSettingsForm.SaveHostListBoxWidthCheckBoxClick(Sender: TObject);
+begin
+  SaveHostListBoxWidth := SaveHostListBoxWidthCheckBox.Checked;
 end;
 
 procedure TSettingsForm.SavFrmPosChkBoxClick(Sender: TObject);

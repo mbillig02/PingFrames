@@ -46,6 +46,7 @@ object MainForm: TMainForm
       OnKeyDown = HostListBoxKeyDown
       OnKeyPress = HostListBoxKeyPress
       OnMouseDown = HostListBoxMouseDown
+      ExplicitHeight = 197
     end
     object LeftTopPanel: TPanel
       Left = 1
