@@ -1,0 +1,20 @@
+24.1.31.0
+Add Throw away first ping
+
+24.1.30.0
+Add Copy Paste buttons for HostEdit
+Add Shift select "Ping Selected" to flip autostart pinging
+Add AutoStartPingingOnFrameCreate setting
+
+24.1.29.0
+Add Convert case in Edit HostList
+
+24.1.19.0
+Add "TCP Ping"
+Add Save HostList Width
+
+24.1.13.0
+Reworked top panel
+Add pause to removeframe
+Add CntDwnSpinEdit
+Updated Help

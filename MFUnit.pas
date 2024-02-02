@@ -274,10 +274,10 @@ type
     procedure NewFrameFromSelectedHost1(HostToPing: String; AutoStart: Boolean);
     procedure LoadFrameConfig(FrameConfigFileName: String);
     procedure SaveFrameConfig(FrameConfigFileName: String);
-    procedure PingSelected1;
+    procedure PingSelected1(AutoStart: Boolean);
     procedure ClearPingFrames2;
     procedure NewFrameFromSelectedHost2(HostToPing: String; AutoStart: Boolean);
-    procedure PingSelected2;
+    procedure PingSelected2(AutoStart: Boolean);
     procedure SizeFrames2;
     procedure SetColumn2;
     procedure AddPingFrame2;
@@ -287,7 +287,7 @@ type
     procedure NewFrameFromSelectedHostWithExpand(HostToPing: String;
       AutoStart: Boolean);
     procedure SizeFramesWithExpand;
-    procedure PingSelectedWithExpand;
+    procedure PingSelectedWithExpand(AutoStart: Boolean);
     procedure StopPinging1(var ActivePingsB: Boolean);
     procedure ClearFrames1;
     procedure StopPinging2(var ActivePingsB: Boolean);
@@ -311,7 +311,7 @@ var
   ExeDir, DtaDir, TmpDir, LstDir, StyleStr, SsnDir: String;
   MainFormDefaultRect, MainFormRect: TTopLeftHeightWidth;
   SaveFormSize, SaveFormPosition, StylesMM, StylesEnabled, AutoStartPinging,
-  StartTimeoutPnlVisible, ConvertToLC, ConvertToUC, PauseForRemoveFrame, SaveHostListBoxWidth: Boolean;
+  StartTimeoutPnlVisible, ConvertToLC, ConvertToUC, PauseForRemoveFrame, SaveHostListBoxWidth, StartPingingOnFrameCreate, ThrowAwayFirstPing: Boolean;
   CntDwnFrm: Integer;
 
 implementation
@@ -648,7 +648,7 @@ begin
   end;
 end;
 
-procedure TMainForm.PingSelected1;
+procedure TMainForm.PingSelected1(AutoStart: Boolean);
 var
   i: Integer;
 begin
@@ -656,12 +656,12 @@ begin
   begin
     if HostListbox.Selected[i] then
     begin
-      NewFrameFromSelectedHost1(HostListBox.Items[i], True);
+      NewFrameFromSelectedHost1(HostListBox.Items[i], AutoStart);
     end;
   end;
 end;
 
-procedure TMainForm.PingSelectedWithExpand;
+procedure TMainForm.PingSelectedWithExpand(AutoStart: Boolean);
 var
   i: Integer;
 begin
@@ -669,12 +669,12 @@ begin
   begin
     if HostListbox.Selected[i] then
     begin
-      NewFrameFromSelectedHostWithExpand(HostListBox.Items[i], True);
+      NewFrameFromSelectedHostWithExpand(HostListBox.Items[i], AutoStart);
     end;
   end;
 end;
 
-procedure TMainForm.PingSelected2;
+procedure TMainForm.PingSelected2(AutoStart: Boolean);
 var
   i: Integer;
 begin
@@ -682,7 +682,7 @@ begin
   begin
     if HostListbox.Selected[i] then
     begin
-      NewFrameFromSelectedHost2(HostListBox.Items[i], True);
+      NewFrameFromSelectedHost2(HostListBox.Items[i], AutoStart);
     end;
   end;
 end;
@@ -862,7 +862,14 @@ end;
 
 procedure TMainForm.HostListBoxDblClick(Sender: TObject);
 begin
-  PingSelected1;
+  if GetKeyState(VK_SHIFT) then
+  begin
+    PingSelected1(not StartPingingOnFrameCreate);
+  end
+  else
+  begin
+    PingSelected1(StartPingingOnFrameCreate);
+  end;
 end;
 
 procedure TMainForm.HostListBoxKeyDown(Sender: TObject; var Key: Word;
@@ -1200,17 +1207,38 @@ end;
 
 procedure TMainForm.aPingSelected2Execute(Sender: TObject);
 begin
-  PingSelected2;
+  if GetKeyState(VK_SHIFT) then
+  begin
+    PingSelected2(not StartPingingOnFrameCreate);
+  end
+  else
+  begin
+    PingSelected2(StartPingingOnFrameCreate);
+  end;
 end;
 
 procedure TMainForm.aPingSelectedExecute(Sender: TObject);
 begin
-  PingSelected1;
+  if GetKeyState(VK_SHIFT) then
+  begin
+    PingSelected1(not StartPingingOnFrameCreate);
+  end
+  else
+  begin
+    PingSelected1(StartPingingOnFrameCreate);
+  end;
 end;
 
 procedure TMainForm.aPingSelectedWithExpandExecute(Sender: TObject);
 begin
-  PingSelectedWithExpand;
+  if GetKeyState(VK_SHIFT) then
+  begin
+    PingSelectedWithExpand(not StartPingingOnFrameCreate);
+  end
+  else
+  begin
+    PingSelectedWithExpand(StartPingingOnFrameCreate);
+  end;
 end;
 
 procedure TMainForm.aReloadAutosaveSessionExecute(Sender: TObject);
@@ -1308,6 +1336,8 @@ begin
   SettingsForm.PauseForRemoveFrameCheckBox.Checked := PauseForRemoveFrame;
   SettingsForm.CntDwnSpinEdit.Value := CntDwnFrm;
   SettingsForm.SaveHostListBoxWidthCheckBox.Checked := SaveHostListBoxWidth;
+  SettingsForm.StartPingingOnFrameCreateCheckBox.Checked := StartPingingOnFrameCreate;
+  SettingsForm.ThrowAwayFirstPingCheckBox.Checked := ThrowAwayFirstPing;
 
 //  SettingsForm.Top := MainForm.Top; SettingsForm.Left := MainForm.Left + MainForm.Width;
   if MainForm.Left + MainForm.Width + SettingsForm.Width < Screen.WorkAreaWidth then
@@ -1503,6 +1533,7 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     HostEdit.Text := HostToPing;
     SizeFrames1;
+    gThrowAwayFirstPing := True;
     if AutoStart and (Length(HostEdit.Text) > 0) then
     begin
       ContinuousPingSpdBtn.Down := True;
@@ -2275,6 +2306,8 @@ begin
     ConvertToUC := RegIniFile.ReadBool('Section-Settings', 'ConvertToUC', False);
     PauseForRemoveFrame := RegIniFile.ReadBool('Section-Settings', 'PauseForRemoveFrame', True);
     CntDwnFrm := RegIniFile.ReadInteger('Section-Settings', 'CntDwnFrm', 10);
+    StartPingingOnFrameCreate := RegIniFile.ReadBool('Section-Settings', 'StartPingingOnFrameCreate', True);
+    ThrowAwayFirstPing := RegIniFile.ReadBool('Section-Settings', 'ThrowAwayFirstPing', True);
   finally
     RegIniFile.Free;
   end;
@@ -2333,6 +2366,9 @@ begin
     RegIniFile.WriteInteger('Section-Settings', 'CurrentPage', SettingsForm.JvPageList.ActivePageIndex);
     RegIniFile.WriteBool('Section-Settings', 'AutoStartPinging', AutoStartPinging);
     RegIniFile.WriteBool('Section-Settings', 'StartTimeoutPnlVisible', StartTimeoutPnlVisible);
+
+    RegIniFile.WriteBool('Section-Settings', 'StartPingingOnFrameCreate', StartPingingOnFrameCreate);
+    RegIniFile.WriteBool('Section-Settings', 'ThrowAwayFirstPing', ThrowAwayFirstPing);
 
     RegIniFile.WriteBool('Section-Settings', 'ConvertToLC', ConvertToLC);
     RegIniFile.WriteBool('Section-Settings', 'ConvertToUC', ConvertToUC);
@@ -2440,6 +2476,7 @@ begin
     PopupMenu := FramePM1;
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     SizeFrames1;
+    gThrowAwayFirstPing := ThrowAwayFirstPing;
   end;
 end;
 
@@ -2466,6 +2503,7 @@ begin
     PopupMenu := FramePM2;
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     SizeFrames2;
+    gThrowAwayFirstPing := ThrowAwayFirstPing;
   end;
 end;
 

@@ -65,5 +65,23 @@ object HLBEditMemoDlg: THLBEditMemoDlg
       OnClick = SortBtnClick
       ExplicitTop = 146
     end
+    object UpperCaseBtn: TButton
+      Left = 6
+      Top = 127
+      Width = 75
+      Height = 25
+      Caption = 'UpperCase'
+      TabOrder = 3
+      OnClick = UpperCaseBtnClick
+    end
+    object LowerCaseBtn: TButton
+      Left = 6
+      Top = 96
+      Width = 75
+      Height = 25
+      Caption = 'LowerCase'
+      TabOrder = 4
+      OnClick = LowerCaseBtnClick
+    end
   end
 end

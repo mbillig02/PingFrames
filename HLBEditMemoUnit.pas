@@ -12,9 +12,13 @@ type
     ListBoxEditMemo: TMemo;
     RightPanel: TPanel;
     SortBtn: TButton;
+    UpperCaseBtn: TButton;
+    LowerCaseBtn: TButton;
     procedure ListBoxEditMemoKeyPress(Sender: TObject; var Key: Char);
     procedure SortBtnClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure UpperCaseBtnClick(Sender: TObject);
+    procedure LowerCaseBtnClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -27,6 +31,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure THLBEditMemoDlg.UpperCaseBtnClick(Sender: TObject);
+begin
+  ListBoxEditMemo.SelText := UpperCase(ListBoxEditMemo.SelText);
+end;
 
 procedure THLBEditMemoDlg.FormActivate(Sender: TObject);
 begin
@@ -41,6 +50,11 @@ begin
     (Sender as TMemo).SelectAll;
     Key := #0;
   end;
+end;
+
+procedure THLBEditMemoDlg.LowerCaseBtnClick(Sender: TObject);
+begin
+  ListBoxEditMemo.SelText := LowerCase(ListBoxEditMemo.SelText);
 end;
 
 procedure THLBEditMemoDlg.SortBtnClick(Sender: TObject);

@@ -219,7 +219,7 @@ object PingFrame: TPingFrame
     object HostEdit: TEdit
       Left = 36
       Top = 1
-      Width = 75
+      Width = 70
       Height = 19
       Align = alClient
       Alignment = taCenter
@@ -296,13 +296,37 @@ object PingFrame: TPingFrame
       ExplicitHeight = 23
     end
     object SpacerPnl1: TPanel
-      Left = 111
+      Left = 106
       Top = 1
-      Width = 5
+      Width = 10
       Height = 19
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 4
+      object CopyBtn: TButton
+        Left = 0
+        Top = 0
+        Width = 10
+        Height = 9
+        Hint = 'Copy Host Edit to ClipBoard'
+        Align = alTop
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        OnClick = CopyBtnClick
+      end
+      object PasteBtn: TButton
+        Left = 0
+        Top = 10
+        Width = 10
+        Height = 9
+        Hint = 'Paste ClipBoard to Host Edit'
+        Align = alBottom
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        OnClick = PasteBtnClick
+      end
     end
   end
   object PingTimer: TTimer

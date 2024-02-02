@@ -63,6 +63,8 @@ type
     PauseForRemoveFrameCheckBox: TCheckBox;
     CntDwnSpinEdit: TSpinEdit;
     SaveHostListBoxWidthCheckBox: TCheckBox;
+    StartPingingOnFrameCreateCheckBox: TCheckBox;
+    ThrowAwayFirstPingCheckBox: TCheckBox;
     procedure SetDefaultScreenBtnClick(Sender: TObject);
     procedure SetAlomstFullScreenBtnClick(Sender: TObject);
     procedure SavFrmSizChkBoxClick(Sender: TObject);
@@ -101,6 +103,8 @@ type
     procedure PauseForRemoveFrameCheckBoxClick(Sender: TObject);
     procedure CntDwnSpinEditChange(Sender: TObject);
     procedure SaveHostListBoxWidthCheckBoxClick(Sender: TObject);
+    procedure StartPingingOnFrameCreateCheckBoxClick(Sender: TObject);
+    procedure ThrowAwayFirstPingCheckBoxClick(Sender: TObject);
   private
     procedure OpenDirectory(DirectoryName: String);
     procedure ListToForm(PositionB, SizeB: Boolean);
@@ -155,6 +159,11 @@ begin
   OpenDirectory(MainForm.GetSsnDir);
 end;
 
+procedure TSettingsForm.StartPingingOnFrameCreateCheckBoxClick(Sender: TObject);
+begin
+  StartPingingOnFrameCreate := StartPingingOnFrameCreateCheckBox.Checked;
+end;
+
 procedure TSettingsForm.StartTimeoutPnlVisibleCheckBoxClick(Sender: TObject);
 begin
   StartTimeoutPnlVisible := StartTimeoutPnlVisibleCheckBox.Checked;
@@ -185,6 +194,11 @@ begin
   MainForm.Height := Screen.WorkAreaHeight - 60;
   MainForm.Width := Screen.WorkAreaWidth - 60;
   MainForm.UpdateScrPosEdits;
+end;
+
+procedure TSettingsForm.ThrowAwayFirstPingCheckBoxClick(Sender: TObject);
+begin
+  ThrowAwayFirstPing := ThrowAwayFirstPingCheckBox.Checked;
 end;
 
 procedure TSettingsForm.TmpDirCopyToClpBrdBtnClick(Sender: TObject);

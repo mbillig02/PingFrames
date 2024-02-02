@@ -18,7 +18,7 @@ object SettingsForm: TSettingsForm
     Top = 0
     Width = 359
     Height = 326
-    ActivePage = JvStandardPageForm
+    ActivePage = JvStandardPageMisc
     PropagateEnable = False
     Align = alClient
     ExplicitWidth = 355
@@ -431,6 +431,24 @@ object SettingsForm: TSettingsForm
         TabOrder = 4
         Value = 10
         OnChange = CntDwnSpinEditChange
+      end
+      object StartPingingOnFrameCreateCheckBox: TCheckBox
+        Left = 24
+        Top = 178
+        Width = 177
+        Height = 17
+        Caption = 'Start Pinging On Frame Create'
+        TabOrder = 5
+        OnClick = StartPingingOnFrameCreateCheckBoxClick
+      end
+      object ThrowAwayFirstPingCheckBox: TCheckBox
+        Left = 24
+        Top = 201
+        Width = 142
+        Height = 17
+        Caption = 'Throw Away First Ping'
+        TabOrder = 6
+        OnClick = ThrowAwayFirstPingCheckBoxClick
       end
     end
   end
