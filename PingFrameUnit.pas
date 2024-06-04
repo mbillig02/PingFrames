@@ -52,6 +52,7 @@ type
     SpinEdit: TSpinEdit;
     CopyBtn: TButton;
     PasteBtn: TButton;
+    TestPnl: TPanel;
     procedure ContinuousPingSpdBtnClick(Sender: TObject);
     procedure PingTimerTimer(Sender: TObject);
     procedure ToggleBRPnlClick(Sender: TObject);
@@ -64,6 +65,7 @@ type
     procedure PointsSpinBtnDownClick(Sender: TObject);
     procedure CopyBtnClick(Sender: TObject);
     procedure PasteBtnClick(Sender: TObject);
+    procedure TestPnlClick(Sender: TObject);
   private
     ClearChart: Boolean;
     fTcpHost: String;
@@ -381,6 +383,17 @@ begin
     Splitter.Visible := False;
     Splitter.Align := alNone;
   end;
+end;
+
+procedure TPingFrame.TestPnlClick(Sender: TObject);
+begin
+  // Test
+//  PingChart.BottomAxis.LabelsFormat.Font.Size := 6;
+//  PingChart.LeftAxis.LabelsFormat.Font.Size := 6;
+
+  PingChart.BottomAxis.LabelsFont.Size := 6;
+  PingChart.LeftAxis.LabelsFont.Size := 6;
+
 end;
 
 procedure TPingFrame.PasteBtnClick(Sender: TObject);

@@ -2,10 +2,13 @@
 <BorlandProject>
 	<Transactions>
     <Transaction>2023/08/25 17:15:57.000.825,=C:\TMP\Delphi.Win32\PingGUII\OKCANCL2.pas</Transaction>
-    <Transaction>2023/08/25 17:46:39.000.210,C:\TMP\Delphi.Win32\PingGUII\OKCANCL2.pas=C:\TMP\Delphi.Win32\PingGUII\HLBEditMemoUnit.pas</Transaction>
     <Transaction>2023/08/25 17:46:39.000.210,C:\TMP\Delphi.Win32\PingGUII\OKCANCL2.dfm=C:\TMP\Delphi.Win32\PingGUII\HLBEditMemoUnit.dfm</Transaction>
+    <Transaction>2023/08/25 17:46:39.000.210,C:\TMP\Delphi.Win32\PingGUII\OKCANCL2.pas=C:\TMP\Delphi.Win32\PingGUII\HLBEditMemoUnit.pas</Transaction>
     <Transaction>2023/09/12 16:38:47.000.254,=C:\TMP\Delphi.Win32\PingGUII\PingGUII.todo</Transaction>
     <Transaction>2023/10/15 14:37:02.000.894,C:\TMP\Delphi.Win32\PingGUII\FileViewForm.pas=</Transaction>
     <Transaction>2023/11/23 10:25:33.000.904,C:\TMP\Delphi.Win32\PingFrames\PingGUII.dproj=C:\TMP\Delphi.Win32\PingFrames\PingFrames.dproj</Transaction>
+    <Transaction>2024/05/24 17:03:29.000.133,=C:\TMP\Delphi.Win32\PingFrames\Unit1.pas</Transaction>
+    <Transaction>2024/05/24 17:07:32.000.145,C:\TMP\Delphi.Win32\PingFrames\Unit1.pas=C:\TMP\Delphi.Win32\PingFrames\ScanPortsUnit.pas</Transaction>
+    <Transaction>2024/05/24 17:07:32.000.145,C:\TMP\Delphi.Win32\PingFrames\Unit1.dfm=C:\TMP\Delphi.Win32\PingFrames\ScanPortsUnit.dfm</Transaction>
   </Transactions>
 </BorlandProject>

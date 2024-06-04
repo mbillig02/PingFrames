@@ -4,9 +4,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, VirtualTrees,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, VirtualTrees, VCLTee.TeCanvas,
   JvComponentBase, JvBalloonHint, UtlUnit, Menus, About, ActnList,
-  System.Actions, System.UITypes, Themes, MruUnit, Vcl.Buttons;
+  System.Actions, System.UITypes, Themes, MruUnit, Vcl.Buttons, ScanPortsUnit;
 
 const
   PgmName = 'PingFrames';
@@ -166,6 +166,9 @@ type
     mmiDirectories: TMenuItem;
     mmiHelp: TMenuItem;
     aHelp: TAction;
+    pmiScanPorts: TMenuItem;
+    N12: TMenuItem;
+    N13: TMenuItem;
     function GetDtaDir: String;
     function GetLstDir: String;
     function GetServiceListFileName: String;
@@ -245,6 +248,7 @@ type
     procedure mmiShowReloadClick(Sender: TObject);
     procedure aPingSelectedWithExpandExecute(Sender: TObject);
     procedure aHelpExecute(Sender: TObject);
+    procedure pmiScanPortsClick(Sender: TObject);
   private
     aMsgDlgTm: TForm;
     DlgLbl: TLabel;
@@ -1534,6 +1538,9 @@ begin
     HostEdit.Text := HostToPing;
     SizeFrames1;
     gThrowAwayFirstPing := True;
+    {$IFDEF VER360} // RAD Studio 12
+      PingChart.View3DOptions.ZoomText := ztNo;
+    {$ENDIF}
     if AutoStart and (Length(HostEdit.Text) > 0) then
     begin
       ContinuousPingSpdBtn.Down := True;
@@ -1566,6 +1573,9 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     HostEdit.Text := HostToPing;
     SizeFramesWithExpand;
+    {$IFDEF VER360} // RAD Studio 12
+      PingChart.View3DOptions.ZoomText := ztNo;
+    {$ENDIF}
     if AutoStart and (Length(HostEdit.Text) > 0) then
     begin
       ContinuousPingSpdBtn.Down := True;
@@ -1598,6 +1608,9 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     HostEdit.Text := HostToPing;
     SizeFrames2;
+    {$IFDEF VER360} // RAD Studio 12
+      PingChart.View3DOptions.ZoomText := ztNo;
+    {$ENDIF}
     if AutoStart and (Length(HostEdit.Text) > 0) then
     begin
       ContinuousPingSpdBtn.Down := True;
@@ -1897,6 +1910,24 @@ begin
     PingFrameA1[i].Tag := i;
   end;
   SizeFrames1;
+end;
+
+procedure TMainForm.pmiScanPortsClick(Sender: TObject);
+begin
+  if HostListbox.ItemIndex > -1 then
+  begin
+    if Pos(':', HostListbox.Items[HostListbox.ItemIndex]) > 0 then
+    begin
+      ScanPortsForm.HostNameLabeledEdit.Text := Copy(HostListbox.Items[HostListbox.ItemIndex], 1, Pos(':', HostListbox.Items[HostListbox.ItemIndex]) - 1);
+    end
+    else
+    begin
+      ScanPortsForm.HostNameLabeledEdit.Text := HostListbox.Items[HostListbox.ItemIndex];
+    end;
+  end;
+  ScanPortsForm.ClearPortBtnA;
+  ScanPortsForm.DNSResultLbl.Caption := '';
+  ScanPortsForm.Show;
 end;
 
 // https://stackoverflow.com/questions/11594084/shift-in-the-right-of-last-item-of-the-menu
@@ -2213,6 +2244,7 @@ begin
       if FileExists(SsnDir + 'Session_AutoSave.txt') then DeleteFile(SsnDir + 'Session_AutoSave.txt');
     end;
   end;
+  ScanPortsForm.ClearPortBtnA;
   ClearPingForms;
   ClearAllFrames;
   SaveSettings;
@@ -2477,6 +2509,9 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     SizeFrames1;
     gThrowAwayFirstPing := ThrowAwayFirstPing;
+    {$IFDEF VER360} // RAD Studio 12
+      PingChart.View3DOptions.ZoomText := ztNo;
+    {$ENDIF}
   end;
 end;
 
@@ -2504,6 +2539,9 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     SizeFrames2;
     gThrowAwayFirstPing := ThrowAwayFirstPing;
+    {$IFDEF VER360} // RAD Studio 12
+      PingChart.View3DOptions.ZoomText := ztNo;
+    {$ENDIF}
   end;
 end;
 

@@ -37,6 +37,8 @@ object PingFrame: TPingFrame
       View3D = False
       Align = alClient
       TabOrder = 0
+      ExplicitLeft = 6
+      ExplicitTop = 5
       DesignSize = (
         364
         86)
@@ -66,6 +68,20 @@ object PingFrame: TPingFrame
         ParentBackground = False
         TabOrder = 1
         OnClick = ClearChartPnlClick
+      end
+      object TestPnl: TPanel
+        Left = 0
+        Top = 12
+        Width = 10
+        Height = 11
+        Alignment = taLeftJustify
+        BevelEdges = []
+        BevelOuter = bvNone
+        Caption = 'T'
+        ParentBackground = False
+        TabOrder = 2
+        Visible = False
+        OnClick = TestPnlClick
       end
       object LineSeries: TLineSeries
         HoverElement = [heCurrent]

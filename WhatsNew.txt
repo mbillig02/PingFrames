@@ -1,3 +1,11 @@
+24.5.25.0
+Add Scan Ports
+
+24.2.29.0
+  {$IFDEF VER360} // RAD Studio 12
+    PingChart.View3DOptions.ZoomText := ztNo;
+  {$ENDIF}
+
 24.1.31.0
 Add Throw away first ping
 

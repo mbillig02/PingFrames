@@ -46,7 +46,6 @@ object MainForm: TMainForm
       OnKeyDown = HostListBoxKeyDown
       OnKeyPress = HostListBoxKeyPress
       OnMouseDown = HostListBoxMouseDown
-      ExplicitHeight = 197
     end
     object LeftTopPanel: TPanel
       Left = 1
@@ -599,14 +598,24 @@ object MainForm: TMainForm
     object pmiDeleteSelectedHost: TMenuItem
       Action = aDeleteSelectedHost
     end
-    object pmiHLBEditMemo: TMenuItem
-      Action = aHLBEditMemo
-    end
     object pmiAddToHostListboxFromClipboard: TMenuItem
       Action = aPasteFromClipboard
     end
     object pmiSelectAll: TMenuItem
       Action = aSelectAll
+    end
+    object N12: TMenuItem
+      Caption = '-'
+    end
+    object pmiHLBEditMemo: TMenuItem
+      Action = aHLBEditMemo
+    end
+    object pmiScanPorts: TMenuItem
+      Caption = 'Scan Ports'
+      OnClick = pmiScanPortsClick
+    end
+    object N13: TMenuItem
+      Caption = '-'
     end
     object pmiLowerCase: TMenuItem
       Action = aLowerCase
