@@ -45,14 +45,19 @@ type
     TimeSinceLastTimeoutLbl: TLabel;
     SpacerPnl4: TPanel;
     SpacerPnl3: TPanel;
-    SpacerPnl2: TPanel;
     SpacerPnl1: TPanel;
     PointsSpinBtn: TSpinButton;
     PointsEdit: TEdit;
-    SpinEdit: TSpinEdit;
+    IPAddressStatusPnlWidthSpinEdit: TSpinEdit;
     CopyBtn: TButton;
     PasteBtn: TButton;
     TestPnl: TPanel;
+    EditBtnPnl: TPanel;
+    IPAddressStatusPnl: TPanel;
+    IPAddressStatusSplitter: TSplitter;
+    TopPnlSplitter: TSplitter;
+    HostIPStatusPnl: TPanel;
+    ToggleWidthSpinEditPnl: TPanel;
     procedure ContinuousPingSpdBtnClick(Sender: TObject);
     procedure PingTimerTimer(Sender: TObject);
     procedure ToggleBRPnlClick(Sender: TObject);
@@ -66,6 +71,11 @@ type
     procedure CopyBtnClick(Sender: TObject);
     procedure PasteBtnClick(Sender: TObject);
     procedure TestPnlClick(Sender: TObject);
+    procedure IPAddressStatusPnlResize(Sender: TObject);
+    procedure HostEditDblClick(Sender: TObject);
+    procedure AutoSizeHostEditWidth;
+    procedure ToggleWidthSpinEditPnlClick(Sender: TObject);
+    procedure IPAddressStatusPnlWidthSpinEditChange(Sender: TObject);
   private
     ClearChart: Boolean;
     fTcpHost: String;
@@ -75,6 +85,7 @@ type
     procedure PingThreadTermPing(Sender: TObject);
     procedure DoTcpPing(Host: String; Port: Integer);
     procedure AddToChart(lReplyTotal: Integer; lReplyIPAddr: string; lDnsHostIP: string; lReplyRTT: Integer);
+    procedure AdjustLabelWidth(ALbl, BLbl: TLabel);
     { Private declarations }
   public
     gThrowAwayFirstPing: Boolean;
@@ -125,6 +136,11 @@ begin
   if TmpInt > 295 then PointsEdit.Text := '300' else PointsEdit.Text := IntToStr(TmpInt + 5);
 end;
 
+procedure TPingFrame.IPAddressStatusPnlWidthSpinEditChange(Sender: TObject);
+begin
+  IPAddressStatusPnl.Width := IPAddressStatusPnlWidthSpinEdit.Value;
+end;
+
 procedure TPingFrame.WSocketDnsLookupDone(Sender: TObject; ErrCode: Word);
 begin
   if ErrCode = 0 then
@@ -145,6 +161,7 @@ begin
     ContinuousPingSpdBtn.Down := False;
     ContinuousPingSpdBtnClick(nil);
   end;
+  AdjustLabelWidth(IPAddressLbl, StatusLbl);
 end;
 
 procedure TPingFrame.DoTcpPing(Host: String; Port: Integer);
@@ -176,6 +193,17 @@ begin
   ThreadInProgressLbl.Caption := '-';
   if Application.Terminated then Exit;
   if ContinuousPingSpdBtn.Down then PingTimer.Enabled := True;
+end;
+
+procedure TPingFrame.HostEditDblClick(Sender: TObject);
+begin
+  AutoSizeHostEditWidth;
+end;
+
+procedure TPingFrame.IPAddressStatusPnlResize(Sender: TObject);
+begin
+  AdjustLabelWidth(IPAddressLbl, StatusLbl);
+  IPAddressStatusPnlWidthSpinEdit.Value := IPAddressStatusPnl.Width;
 end;
 
 procedure TPingFrame.AddToChart(lReplyTotal: Integer; lReplyIPAddr: string; lDnsHostIP: string; lReplyRTT: Integer);
@@ -234,6 +262,7 @@ begin
         end;
         AverageReplyRTT := Round(TmpRTT / PingChart.Series[0].Count);
         StatusLbl.Caption := 'Low: ' + IntToStr(LowReplyRTT) + '  Avg: ' + IntToStr(AverageReplyRTT) + '  High: ' + IntToStr(HighReplyRTT);
+        AdjustLabelWidth(IPAddressLbl, StatusLbl);
         PingChart.LeftAxis.AutomaticMaximum := False;
         PingChart.LeftAxis.Maximum := HighReplyRTT + (HighReplyRTT * 0.25);
       end;
@@ -263,6 +292,40 @@ begin
       TimeSinceLastTimeoutLbl.Caption := FormatDateTime('hh:nn:ss', SecondsBetween(Time1, Time2) / SecsPerDay);
     end;
   end;
+end;
+
+procedure TPingFrame.AdjustLabelWidth(ALbl, BLbl: TLabel);
+var
+  ATextWidth, BTextWidth: Integer;
+  BPercent: Double;
+begin
+  ALbl.Canvas.Font := ALbl.Font;
+  ATextWidth := ALbl.Canvas.TextWidth(ALbl.Caption);
+  BLbl.Canvas.Font := BLbl.Font;
+  BTextWidth := BLbl.Canvas.TextWidth(BLbl.Caption);
+  BPercent := BTextWidth / (ATextWidth + BTextWidth + 10);
+  BLbl.Width := Trunc((ALbl.Width + BLbl.Width) * BPercent);
+end;
+
+procedure TPingFrame.AutoSizeHostEditWidth;
+var
+  TempCanvas: TControlCanvas;
+  TextSize: TSize;
+  HostEditNewWidth: Integer;
+  WidthChange: Integer;
+begin
+  TempCanvas := TControlCanvas.Create;
+  try
+    TempCanvas.Control := HostEdit;
+    TempCanvas.Font := HostEdit.Font;
+    TextSize := TempCanvas.TextExtent(HostEdit.Text);
+    // Add padding for borders and cursor
+    HostEditNewWidth := TextSize.cx + 20;
+  finally
+    TempCanvas.Free;
+  end;
+  WidthChange := HostEditNewWidth - HostEdit.Width;
+  IPAddressStatusPnl.Width := IPAddressStatusPnl.Width - WidthChange;
 end;
 
 procedure TPingFrame.ClearChartPnlClick(Sender: TObject);
@@ -394,6 +457,11 @@ begin
   PingChart.BottomAxis.LabelsFont.Size := 6;
   PingChart.LeftAxis.LabelsFont.Size := 6;
 
+end;
+
+procedure TPingFrame.ToggleWidthSpinEditPnlClick(Sender: TObject);
+begin
+  IPAddressStatusPnlWidthSpinEdit.Visible := not IPAddressStatusPnlWidthSpinEdit.Visible;
 end;
 
 procedure TPingFrame.PasteBtnClick(Sender: TObject);

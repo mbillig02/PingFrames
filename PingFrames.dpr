@@ -14,7 +14,6 @@ uses
   IMUnit in 'IMUnit.pas' {InfoMemoForm},
   PingFrameUnit in 'PingFrameUnit.pas' {PingFrame: TFrame},
   OIUnit in 'OIUnit.pas' {OIForm},
-  PFUnit in 'PFUnit.pas' {PingForm},
   HLBEditMemoUnit in 'HLBEditMemoUnit.pas' {HLBEditMemoDlg},
   ScanPortsUnit in 'ScanPortsUnit.pas' {ScanPortsForm};
 
@@ -29,7 +28,6 @@ begin
   Application.CreateForm(TInfoMemoForm, InfoMemoForm);
   Application.CreateForm(TInfoMemoForm, InfoMemoForm);
   Application.CreateForm(TOIForm, OIForm);
-  Application.CreateForm(TPingForm, PingForm);
   Application.CreateForm(THLBEditMemoDlg, HLBEditMemoDlg);
   Application.CreateForm(TScanPortsForm, ScanPortsForm);
   Application.Run;

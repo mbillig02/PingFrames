@@ -37,8 +37,6 @@ object PingFrame: TPingFrame
       View3D = False
       Align = alClient
       TabOrder = 0
-      ExplicitLeft = 6
-      ExplicitTop = 5
       DesignSize = (
         364
         86)
@@ -49,10 +47,13 @@ object PingFrame: TPingFrame
         Top = 0
         Width = 8
         Height = 11
+        Hint = 'Toggle displaying right panel'
         BevelEdges = []
         BevelOuter = bvNone
         Caption = '#'
         ParentBackground = False
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
         OnClick = ToggleBRPnlClick
       end
@@ -61,11 +62,14 @@ object PingFrame: TPingFrame
         Top = 72
         Width = 10
         Height = 11
+        Hint = 'Clear chart'
         Anchors = [akLeft, akBottom]
         BevelEdges = []
         BevelOuter = bvNone
         Caption = 'C'
         ParentBackground = False
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 1
         OnClick = ClearChartPnlClick
       end
@@ -111,23 +115,25 @@ object PingFrame: TPingFrame
         Top = 2
         Width = 85
         Height = 15
+        Hint = 'Shift-Left-Click to reset counters'
         Alignment = taCenter
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
         Caption = 'Timeouts: 0'
+        ParentShowHint = False
+        ShowHint = True
         OnMouseDown = TimeoutsLblMouseDown
         ExplicitWidth = 117
       end
       object PointsLbl: TLabel
-        Left = 0
-        Top = 68
+        Left = 3
+        Top = 67
         Width = 85
         Height = 15
         Alignment = taCenter
         Anchors = [akLeft, akBottom]
         AutoSize = False
         Caption = 'Points: 0'
-        ExplicitTop = 64
       end
       object TimeSinceLastTimeoutLbl: TLabel
         Left = 8
@@ -140,6 +146,19 @@ object PingFrame: TPingFrame
         ParentShowHint = False
         ShowHint = True
       end
+      object IPAddressStatusPnlWidthSpinEdit: TSpinEdit
+        Left = 28
+        Top = 43
+        Width = 50
+        Height = 24
+        Anchors = [akLeft, akBottom]
+        MaxValue = 0
+        MinValue = 0
+        TabOrder = 1
+        Value = 999
+        Visible = False
+        OnChange = IPAddressStatusPnlWidthSpinEditChange
+      end
       object LastTimeoutComboBox: TComboBox
         Left = 8
         Top = 18
@@ -148,6 +167,22 @@ object PingFrame: TPingFrame
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
         Text = '00:00:00'
+      end
+      object ToggleWidthSpinEditPnl: TPanel
+        Left = 8
+        Top = 48
+        Width = 8
+        Height = 11
+        Hint = 'Toggle displaying IPAddressStatusWidthSpinEdit'
+        Anchors = [akLeft, akBottom]
+        BevelEdges = []
+        BevelOuter = bvNone
+        Caption = '#'
+        ParentBackground = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        OnClick = ToggleWidthSpinEditPnlClick
       end
     end
   end
@@ -193,56 +228,6 @@ object PingFrame: TPingFrame
       OnClick = ThreadInProgressLblClick
       ExplicitLeft = 387
     end
-    object IPAddressLbl: TLabel
-      Left = 116
-      Top = 1
-      Width = 82
-      Height = 19
-      Align = alRight
-      Alignment = taCenter
-      AutoSize = False
-      Caption = '0.0.0.0'
-      Layout = tlCenter
-      ExplicitLeft = 100
-      ExplicitTop = 5
-      ExplicitHeight = 15
-    end
-    object StatusLbl: TLabel
-      Left = 208
-      Top = 1
-      Width = 175
-      Height = 19
-      Align = alRight
-      Alignment = taCenter
-      AutoSize = False
-      Caption = 'Low: -  Avg: -  High: -'
-      Layout = tlCenter
-      ExplicitLeft = 175
-      ExplicitTop = 5
-      ExplicitHeight = 15
-    end
-    object SpinEdit: TSpinEdit
-      Left = 241
-      Top = -2
-      Width = 50
-      Height = 24
-      MaxValue = 0
-      MinValue = 0
-      TabOrder = 7
-      Value = 0
-      Visible = False
-    end
-    object HostEdit: TEdit
-      Left = 36
-      Top = 1
-      Width = 70
-      Height = 19
-      Align = alClient
-      Alignment = taCenter
-      TabOrder = 0
-      Text = 'LocalHost'
-      ExplicitHeight = 23
-    end
     object SpacerPnl4: TPanel
       Left = 398
       Top = 1
@@ -250,7 +235,7 @@ object PingFrame: TPingFrame
       Height = 19
       Align = alRight
       BevelOuter = bvNone
-      TabOrder = 1
+      TabOrder = 0
     end
     object SpacerPnl3: TPanel
       Left = 383
@@ -259,16 +244,7 @@ object PingFrame: TPingFrame
       Height = 19
       Align = alRight
       BevelOuter = bvNone
-      TabOrder = 2
-    end
-    object SpacerPnl2: TPanel
-      Left = 198
-      Top = 1
-      Width = 10
-      Height = 19
-      Align = alRight
-      BevelOuter = bvNone
-      TabOrder = 3
+      TabOrder = 1
     end
     object PointsSpinBtn: TSpinButton
       Left = 438
@@ -286,7 +262,7 @@ object PingFrame: TPingFrame
         0000008080000080800000808000000000000000000000000000000000000000
         0000000000000000000000808000008080000080800000808000008080000080
         800000808000008080000080800000808000}
-      TabOrder = 5
+      TabOrder = 2
       UpGlyph.Data = {
         0E010000424D0E01000000000000360000002800000009000000060000000100
         200000000000D800000000000000000000000000000000000000008080000080
@@ -307,41 +283,131 @@ object PingFrame: TPingFrame
       Height = 19
       Align = alRight
       NumbersOnly = True
-      TabOrder = 6
+      TabOrder = 3
       Text = '180'
       ExplicitHeight = 23
     end
-    object SpacerPnl1: TPanel
-      Left = 106
+    object HostIPStatusPnl: TPanel
+      Left = 36
       Top = 1
-      Width = 10
+      Width = 347
       Height = 19
-      Align = alRight
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      Align = alClient
+      BevelEdges = []
       BevelOuter = bvNone
       TabOrder = 4
-      object CopyBtn: TButton
+      object TopPnlSplitter: TSplitter
+        Left = 97
+        Top = 0
+        Height = 19
+        Align = alRight
+        Color = clBtnShadow
+        ParentColor = False
+        ExplicitLeft = 120
+        ExplicitTop = 8
+        ExplicitHeight = 100
+      end
+      object EditBtnPnl: TPanel
         Left = 0
         Top = 0
-        Width = 10
-        Height = 9
-        Hint = 'Copy Host Edit to ClipBoard'
-        Align = alTop
-        ParentShowHint = False
-        ShowHint = True
+        Width = 97
+        Height = 19
+        Align = alClient
         TabOrder = 0
-        OnClick = CopyBtnClick
+        object HostEdit: TEdit
+          Left = 1
+          Top = 1
+          Width = 85
+          Height = 17
+          Align = alClient
+          Alignment = taCenter
+          TabOrder = 0
+          Text = 'LocalHost'
+          OnDblClick = HostEditDblClick
+          ExplicitHeight = 23
+        end
+        object SpacerPnl1: TPanel
+          Left = 86
+          Top = 1
+          Width = 10
+          Height = 17
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 1
+          object CopyBtn: TButton
+            Left = 0
+            Top = 0
+            Width = 10
+            Height = 9
+            Hint = 'Copy Host Edit to ClipBoard'
+            Align = alTop
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 0
+            OnClick = CopyBtnClick
+          end
+          object PasteBtn: TButton
+            Left = 0
+            Top = 8
+            Width = 10
+            Height = 9
+            Hint = 'Paste ClipBoard to Host Edit'
+            Align = alBottom
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            OnClick = PasteBtnClick
+          end
+        end
       end
-      object PasteBtn: TButton
-        Left = 0
-        Top = 10
-        Width = 10
-        Height = 9
-        Hint = 'Paste ClipBoard to Host Edit'
-        Align = alBottom
-        ParentShowHint = False
-        ShowHint = True
+      object IPAddressStatusPnl: TPanel
+        Left = 100
+        Top = 0
+        Width = 247
+        Height = 19
+        Align = alRight
         TabOrder = 1
-        OnClick = PasteBtnClick
+        OnResize = IPAddressStatusPnlResize
+        object StatusLbl: TLabel
+          Left = 86
+          Top = 1
+          Width = 160
+          Height = 17
+          Align = alRight
+          Alignment = taCenter
+          AutoSize = False
+          Caption = 'Low: -  Avg: -  High: -'
+          Layout = tlCenter
+          ExplicitLeft = 71
+        end
+        object IPAddressLbl: TLabel
+          Left = 1
+          Top = 1
+          Width = 82
+          Height = 17
+          Align = alClient
+          Alignment = taCenter
+          AutoSize = False
+          Caption = '0.0.0.0'
+          Layout = tlCenter
+          ExplicitLeft = -26
+          ExplicitTop = -2
+        end
+        object IPAddressStatusSplitter: TSplitter
+          Left = 83
+          Top = 1
+          Height = 17
+          Align = alRight
+          Color = clBtnShadow
+          ParentColor = False
+          ExplicitLeft = 120
+          ExplicitTop = 8
+          ExplicitHeight = 100
+        end
       end
     end
   end

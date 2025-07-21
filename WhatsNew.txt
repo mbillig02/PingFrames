@@ -1,5 +1,18 @@
+25.7.20.0
+  Removed abandoned PFUnit and PingForm
+
+25.7.19.0
+  Auto size HostEdit
+  Add SpinEdit for IPAddressStatusPnl.Width
+
+25.7.18.1
+  Add save IPAddressStatusPnlWidth
+
+25.7.18.0
+  Auto size top bar labels with splitters
+
 24.5.25.0
-Add Scan Ports
+  Add Scan Ports
 
 24.2.29.0
   {$IFDEF VER360} // RAD Studio 12
@@ -7,22 +20,22 @@ Add Scan Ports
   {$ENDIF}
 
 24.1.31.0
-Add Throw away first ping
+  Add Throw away first ping
 
 24.1.30.0
-Add Copy Paste buttons for HostEdit
-Add Shift select "Ping Selected" to flip autostart pinging
-Add AutoStartPingingOnFrameCreate setting
+  Add Copy Paste buttons for HostEdit
+  Add Shift select "Ping Selected" to flip autostart pinging
+  Add AutoStartPingingOnFrameCreate setting
 
 24.1.29.0
-Add Convert case in Edit HostList
+  Add Convert case in Edit HostList
 
 24.1.19.0
-Add "TCP Ping"
-Add Save HostList Width
+  Add "TCP Ping"
+  Add Save HostList Width
 
 24.1.13.0
-Reworked top panel
-Add pause to removeframe
-Add CntDwnSpinEdit
-Updated Help
+  Reworked top panel
+  Add pause to removeframe
+  Add CntDwnSpinEdit
+  Updated Help

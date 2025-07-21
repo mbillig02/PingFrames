@@ -91,10 +91,10 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_MajorVer>24</VerInfo_MajorVer>
-        <VerInfo_MinorVer>5</VerInfo_MinorVer>
-        <VerInfo_Release>25</VerInfo_Release>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=24.5.25.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MajorVer>25</VerInfo_MajorVer>
+        <VerInfo_MinorVer>7</VerInfo_MinorVer>
+        <VerInfo_Release>20</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=25.7.20.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
         <Icon_MainIcon>PingFrames.ico</Icon_MainIcon>
     </PropertyGroup>
     <ItemGroup>
@@ -132,10 +132,6 @@
         </DCCReference>
         <DCCReference Include="OIUnit.pas">
             <Form>OIForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="PFUnit.pas">
-            <Form>PingForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="HLBEditMemoUnit.pas">

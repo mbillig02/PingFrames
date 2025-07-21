@@ -61,8 +61,6 @@ type
     aAddPingFrame: TAction;
     aClearPingFrames: TAction;
     aOIForm: TAction;
-    aAddPingForm: TAction;
-    aClearPingForms: TAction;
     mmiMisc: TMenuItem;
     mmiAddPingFrame: TMenuItem;
     mmiClearPingFrames: TMenuItem;
@@ -197,8 +195,6 @@ type
     procedure aAddPingFrameExecute(Sender: TObject);
     procedure aClearPingFramesExecute(Sender: TObject);
     procedure aOIFormExecute(Sender: TObject);
-    procedure aAddPingFormExecute(Sender: TObject);
-    procedure aClearPingFormsExecute(Sender: TObject);
     procedure HostListBoxMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure aAddNewHostExecute(Sender: TObject);
@@ -272,8 +268,6 @@ type
     procedure UnCheckStyles(Menu: TMenuItem);
     procedure AddPingFrame1;
     procedure ClearPingFrames1;
-    procedure AddPingForm;
-    procedure ClearPingForms;
     procedure SizeFrames1;
     procedure NewFrameFromSelectedHost1(HostToPing: String; AutoStart: Boolean);
     procedure LoadFrameConfig(FrameConfigFileName: String);
@@ -323,7 +317,7 @@ implementation
 uses
   JclSecurity, ShellApi, ClipBrd, JclSysInfo, IniFiles, PerlRegex,
   SelectFileUnit, SetUnit, JclAnsiStrings, System.IOUtils, IMUnit,
-  PingFrameUnit, OIUnit, PFUnit, HLBEditMemoUnit;
+  PingFrameUnit, OIUnit, HLBEditMemoUnit;
 
 const
 //  standard DPI settings are 100% (96 DPI), 125% (120 DPI), and 150% (144 DPI).
@@ -335,7 +329,6 @@ const
 var
   FInitialized: Boolean;
   FServiceListFileName: String;
-  PingFormA: array of TPingForm;
   PingFrameA1, PingFrameA2: array of TPingFrame;
   TimeToWait, HeightBeforeResize: Integer;
 
@@ -709,6 +702,7 @@ begin
       RegIniFile.WriteString('Frame_' + IntToStr(i), 'HostEditText', PingFrameA1[i].HostEdit.Text);
       RegIniFile.WriteInteger('Frame_' + IntToStr(i), 'SpinEditValue', StrToIntDef(PingFrameA1[i].PointsEdit.Text, 1));
       RegIniFile.WriteBool('Frame_' + IntToStr(i), 'BottomRightPanelVisible', PingFrameA1[i].BottomRightPanel.Visible);
+      RegIniFile.WriteInteger('Frame_' + IntToStr(i), 'IPAddressStatusPnlWidth', PingFrameA1[i].IPAddressStatusPnl.Width);
       RegIniFile.WriteBool('Frame_' + IntToStr(i), 'AutoStart', PingFrameA1[i].ContinuousPingSpdBtn.Down);
     end;
     if mmiShow2.Checked then
@@ -718,6 +712,7 @@ begin
         RegIniFile.WriteString('Frame2_' + IntToStr(i), 'HostEditText', PingFrameA2[i].HostEdit.Text);
         RegIniFile.WriteInteger('Frame2_' + IntToStr(i), 'SpinEditValue', StrToIntDef(PingFrameA2[i].PointsEdit.Text, 1));
         RegIniFile.WriteBool('Frame2_' + IntToStr(i), 'BottomRightPanelVisible', PingFrameA2[i].BottomRightPanel.Visible);
+        RegIniFile.WriteInteger('Frame_2' + IntToStr(i), 'IPAddressStatusPnlWidth', PingFrameA2[i].IPAddressStatusPnl.Width);
         RegIniFile.WriteBool('Frame2_' + IntToStr(i), 'AutoStart', PingFrameA2[i].ContinuousPingSpdBtn.Down);
       end;
     end;
@@ -766,6 +761,14 @@ begin
       PingFrameA1[i].HostEdit.Text := RegIniFile.ReadString('Frame_' + IntToStr(i), 'HostEditText', 'LocalHost');
       PingFrameA1[i].PointsEdit.Text := IntToStr(RegIniFile.ReadInteger('Frame_' + IntToStr(i), 'SpinEditValue', 180));
       PingFrameA1[i].BottomRightPanel.Visible := RegIniFile.ReadBool('Frame_' + IntToStr(i), 'BottomRightPanelVisible', False);
+      if RegIniFile.ValueExists('Frame_' + IntToStr(i), 'IPAddressStatusPnlWidth') then
+      begin
+        PingFrameA1[i].IPAddressStatusPnl.Width := RegIniFile.ReadInteger('Frame_' + IntToStr(i), 'IPAddressStatusPnlWidth', 371);
+      end
+      else
+      begin
+        PingFrameA1[i].AutoSizeHostEditWidth;
+      end;
       AutoStart := RegIniFile.ReadBool('Frame_' + IntToStr(i), 'AutoStart', False);
       if AutoStart then
       begin
@@ -782,6 +785,14 @@ begin
       PingFrameA2[i].HostEdit.Text := RegIniFile.ReadString('Frame2_' + IntToStr(i), 'HostEditText', 'LocalHost');
       PingFrameA2[i].PointsEdit.Text := IntToStr(RegIniFile.ReadInteger('Frame2_' + IntToStr(i), 'SpinEditValue', 180));
       PingFrameA2[i].BottomRightPanel.Visible := RegIniFile.ReadBool('Frame2_' + IntToStr(i), 'BottomRightPanelVisible', False);
+      if RegIniFile.ValueExists('Frame2_' + IntToStr(i), 'IPAddressStatusPnlWidth') then
+      begin
+        PingFrameA2[i].IPAddressStatusPnl.Width := RegIniFile.ReadInteger('Frame_2' + IntToStr(i), 'IPAddressStatusPnlWidth', 371);
+      end
+      else
+      begin
+        PingFrameA2[i].AutoSizeHostEditWidth;
+      end;
       AutoStart := RegIniFile.ReadBool('Frame2_' + IntToStr(i), 'AutoStart', False);
       if AutoStart then
       begin
@@ -924,11 +935,6 @@ begin
   end;
 end;
 
-procedure TMainForm.aAddPingFormExecute(Sender: TObject);
-begin
-  AddPingForm;
-end;
-
 procedure TMainForm.aAddPingFrameExecute(Sender: TObject);
 begin
   AddPingFrame1;
@@ -974,11 +980,6 @@ end;
 procedure TMainForm.aClearAllFramesExecute(Sender: TObject);
 begin
   ClearAllFrames;
-end;
-
-procedure TMainForm.aClearPingFormsExecute(Sender: TObject);
-begin
-  ClearPingForms;
 end;
 
 procedure TMainForm.aClearPingFramesExecute(Sender: TObject);
@@ -2245,7 +2246,6 @@ begin
     end;
   end;
   ScanPortsForm.ClearPortBtnA;
-  ClearPingForms;
   ClearAllFrames;
   SaveSettings;
 end;
@@ -2426,37 +2426,6 @@ begin
   SettingsForm.StylesListBox.Clear;
   for StyleStr in TStyleManager.StyleNames do SettingsForm.StylesListBox.Items.Append(StyleStr);
   SettingsForm.StylesListBox.Sorted := True;
-end;
-
-procedure TMainForm.ClearPingForms;
-var
-  i: Integer;
-begin
-  for i := 0 to High(PingFormA) do
-  begin
-    Repeat
-      Application.ProcessMessages;
-      Sleep(100);
-    Until PingFormA[i].PingFrame.ThreadInProgressLbl.Caption = '-' ;
-
-    PingFormA[i].Free;
-    PingFormA[i] := nil;
-  end;
-  SetLength(PingFormA, 0);
-end;
-
-procedure TMainForm.AddPingForm;
-begin
-  SetLength(PingFormA, Length(PingFormA) + 1);
-  PingFormA[High(PingFormA)] := TPingForm.Create(Self);
-  with PingFormA[High(PingFormA)] do
-  begin
-    Anchors := [akLeft, akTop, akRight];
-    Name := 'PingForm_' + IntToStr(High(PingFormA));
-    Caption := Name;
-    Tag := High(PingFormA);
-    Show;
-  end;
 end;
 
 procedure TMainForm.ClearPingFrames1;

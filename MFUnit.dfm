@@ -46,6 +46,7 @@ object MainForm: TMainForm
       OnKeyDown = HostListBoxKeyDown
       OnKeyPress = HostListBoxKeyPress
       OnMouseDown = HostListBoxMouseDown
+      ExplicitHeight = 197
     end
     object LeftTopPanel: TPanel
       Left = 1
@@ -241,11 +242,11 @@ object MainForm: TMainForm
         Action = aLoadFrameSession
       end
       object mmiAddPingForm: TMenuItem
-        Action = aAddPingForm
+        Caption = 'Add Form'
         Visible = False
       end
       object mmiClearPingForms: TMenuItem
-        Action = aClearPingForms
+        Caption = 'Clear Forms'
         Visible = False
       end
     end
@@ -385,16 +386,6 @@ object MainForm: TMainForm
       Category = 'Misc'
       Caption = 'Object Inspector'
       OnExecute = aOIFormExecute
-    end
-    object aAddPingForm: TAction
-      Category = 'Ping'
-      Caption = 'Add Form'
-      OnExecute = aAddPingFormExecute
-    end
-    object aClearPingForms: TAction
-      Category = 'Ping'
-      Caption = 'Clear Forms'
-      OnExecute = aClearPingFormsExecute
     end
     object aAddNewHost: TAction
       Category = 'HostListbox'
