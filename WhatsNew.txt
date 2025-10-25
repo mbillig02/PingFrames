@@ -1,3 +1,25 @@
+25.10.24.0
+  Added "Add Frame Column 2" and "aAddPingFrameColumn2"
+  Updated the help file
+
+25.10.21.0
+  Fixed DNS Error handling
+  Fix AddPingFrame  It was not setting the ping interval
+
+25.10.19.0
+  Changed ping interval SpinEdits from milliseconds to seconds
+  Changed max seconds fromm 30 to 300
+
+25.10.16.1
+  More work on ability to adjust ping interval
+
+25.10.15.0
+  Changed "Continue" to "Wait for It!" in exit screen
+  Addded preliminary ability to adjust ping interval
+
+25.9.26.0
+  Add setting to toggle IPAddressStatusPnlWidthSpinEdit visibility
+
 25.7.20.0
   Removed abandoned PFUnit and PingForm
 

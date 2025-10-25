@@ -167,6 +167,8 @@ type
     pmiScanPorts: TMenuItem;
     N12: TMenuItem;
     N13: TMenuItem;
+    mmiAddFrameColumn2: TMenuItem;
+    aAddPingFrameColumn2: TAction;
     function GetDtaDir: String;
     function GetLstDir: String;
     function GetServiceListFileName: String;
@@ -245,6 +247,11 @@ type
     procedure aPingSelectedWithExpandExecute(Sender: TObject);
     procedure aHelpExecute(Sender: TObject);
     procedure pmiScanPortsClick(Sender: TObject);
+    procedure ShowIPWidthSpinEdit;
+    function ListPingIntervals: String;
+    function ListPingIntervals2: String;
+    procedure SetPingIntervalInFrame(Column, Row, Interval: Integer);
+    procedure aAddPingFrameColumn2Execute(Sender: TObject);
   private
     aMsgDlgTm: TForm;
     DlgLbl: TLabel;
@@ -454,7 +461,7 @@ begin
   StopPinging2(ActivePingsB);
   Sleep(TimeToWait);
   if PauseForRemoveFrame and ActivePingsB then
-    MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Continue'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
+    MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Wait for It!'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
   MinusFrames1; ClearFrames1;
   MinusFrames2; ClearFrames2;
 end;
@@ -589,6 +596,7 @@ begin
     ColumnPanel2.Caption := '';
     ColumnPanel2.Visible := True;
     Splitter12.Visible := True;
+    aAddPingFrameColumn2.Visible := True;
     aPingSelected2.Visible := True;
     aClearPingFrames2.Visible := True;
     aSizeFrames2.Visible := True;
@@ -600,6 +608,7 @@ begin
     ColumnPanel2.Visible := False;
     Splitter12.Visible := False;
     aShow3.Visible := False;
+    aAddPingFrameColumn2.Visible := False;
     aPingSelected2.Visible := False;
     aClearPingFrames2.Visible := False;
     aSizeFrames2.Visible := False;
@@ -625,6 +634,7 @@ begin
     ColumnPanel2.Caption := '';
     ColumnPanel2.Visible := True;
     Splitter12.Visible := True;
+    aAddPingFrameColumn2.Visible := True;
     aPingSelected2.Visible := True;
     aClearPingFrames2.Visible := True;
     aSizeFrames2.Visible := True;
@@ -637,6 +647,7 @@ begin
     ColumnPanel2.Visible := False;
     Splitter12.Visible := False;
     aShow3.Visible := False;
+    aAddPingFrameColumn2.Visible := False;
     aPingSelected2.Visible := False;
     aClearPingFrames2.Visible := False;
     aSizeFrames2.Visible := False;
@@ -704,6 +715,9 @@ begin
       RegIniFile.WriteBool('Frame_' + IntToStr(i), 'BottomRightPanelVisible', PingFrameA1[i].BottomRightPanel.Visible);
       RegIniFile.WriteInteger('Frame_' + IntToStr(i), 'IPAddressStatusPnlWidth', PingFrameA1[i].IPAddressStatusPnl.Width);
       RegIniFile.WriteBool('Frame_' + IntToStr(i), 'AutoStart', PingFrameA1[i].ContinuousPingSpdBtn.Down);
+
+      RegIniFile.WriteInteger('Frame_' + IntToStr(i), 'PingInterval', PingFrameA1[i].gPingTimerInterval);
+
     end;
     if mmiShow2.Checked then
     begin
@@ -714,6 +728,9 @@ begin
         RegIniFile.WriteBool('Frame2_' + IntToStr(i), 'BottomRightPanelVisible', PingFrameA2[i].BottomRightPanel.Visible);
         RegIniFile.WriteInteger('Frame_2' + IntToStr(i), 'IPAddressStatusPnlWidth', PingFrameA2[i].IPAddressStatusPnl.Width);
         RegIniFile.WriteBool('Frame2_' + IntToStr(i), 'AutoStart', PingFrameA2[i].ContinuousPingSpdBtn.Down);
+
+        RegIniFile.WriteInteger('Frame2_' + IntToStr(i), 'PingInterval', PingFrameA2[i].gPingTimerInterval);
+
       end;
     end;
   finally
@@ -769,6 +786,9 @@ begin
       begin
         PingFrameA1[i].AutoSizeHostEditWidth;
       end;
+
+      PingFrameA1[i].gPingTimerInterval := RegIniFile.ReadInteger('Frame_' + IntToStr(i), 'PingInterval', 1);
+
       AutoStart := RegIniFile.ReadBool('Frame_' + IntToStr(i), 'AutoStart', False);
       if AutoStart then
       begin
@@ -793,6 +813,9 @@ begin
       begin
         PingFrameA2[i].AutoSizeHostEditWidth;
       end;
+
+      PingFrameA2[i].gPingTimerInterval := RegIniFile.ReadInteger('Frame2_' + IntToStr(i), 'PingInterval', 1);
+
       AutoStart := RegIniFile.ReadBool('Frame2_' + IntToStr(i), 'AutoStart', False);
       if AutoStart then
       begin
@@ -935,6 +958,11 @@ begin
   end;
 end;
 
+procedure TMainForm.aAddPingFrameColumn2Execute(Sender: TObject);
+begin
+  AddPingFrame2;
+end;
+
 procedure TMainForm.aAddPingFrameExecute(Sender: TObject);
 begin
   AddPingFrame1;
@@ -945,7 +973,7 @@ var
   TmpStrLst: TStringList;
   i: Integer;
 begin
-  { TODO : Verify with regex }
+
   TmpStrLst := TStringList.Create;
   TmpStrLst.Text := Clipboard.AsText;
   for i := 0 to TmpStrLst.Count - 1 do
@@ -1538,7 +1566,11 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     HostEdit.Text := HostToPing;
     SizeFrames1;
-    gThrowAwayFirstPing := True;
+    gThrowAwayFirstPing := ThrowAwayFirstPing;
+    gPingIntervalStart := 0;
+    gPingTimerInterval := SettingsForm.DefaultPingIntervalSpinEdit.Value;
+    PingTimer.Interval := 1000;
+
     {$IFDEF VER360} // RAD Studio 12
       PingChart.View3DOptions.ZoomText := ztNo;
     {$ENDIF}
@@ -1574,6 +1606,11 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     HostEdit.Text := HostToPing;
     SizeFramesWithExpand;
+    gThrowAwayFirstPing := ThrowAwayFirstPing;
+    gPingIntervalStart := 0;
+    gPingTimerInterval := SettingsForm.DefaultPingIntervalSpinEdit.Value;
+    PingTimer.Interval := 1000;
+
     {$IFDEF VER360} // RAD Studio 12
       PingChart.View3DOptions.ZoomText := ztNo;
     {$ENDIF}
@@ -1609,6 +1646,11 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     HostEdit.Text := HostToPing;
     SizeFrames2;
+    gThrowAwayFirstPing := ThrowAwayFirstPing;
+    gPingIntervalStart := 0;
+    gPingTimerInterval := SettingsForm.DefaultPingIntervalSpinEdit.Value;
+    PingTimer.Interval := 1000;
+
     {$IFDEF VER360} // RAD Studio 12
       PingChart.View3DOptions.ZoomText := ztNo;
     {$ENDIF}
@@ -1845,7 +1887,7 @@ begin
       Sleep(TimeToWait);
     Until PingFrameA2[FrameToDelete].ThreadInProgressLbl.Caption = '-';
     if PauseForRemoveFrame and ActivePingsB then
-      MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Continue'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
+      MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Wait for It!'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
     PingFrameA2[FrameToDelete].ThreadInProgressLbl.Caption := '-';
     PingFrameA2[FrameToDelete].Free;
     PingFrameA2[FrameToDelete] := nil;
@@ -1891,7 +1933,7 @@ begin
       Sleep(TimeToWait);
     Until PingFrameA1[FrameToDelete].ThreadInProgressLbl.Caption = '-';
     if PauseForRemoveFrame and ActivePingsB then
-      MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Continue'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
+      MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Wait for It!'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
     PingFrameA1[FrameToDelete].ThreadInProgressLbl.Caption := '-';
     PingFrameA1[FrameToDelete].Free;
     PingFrameA1[FrameToDelete] := nil;
@@ -2093,6 +2135,20 @@ end;
 procedure TMainForm.mmiShowColumn2ResizeClick(Sender: TObject);
 begin
   SetColumn2Resize;
+end;
+
+procedure TMainForm.ShowIPWidthSpinEdit;
+var
+  i: Integer;
+begin
+  for i := 0 to High(PingFrameA1) do
+  begin
+    PingFrameA1[i].IPAddressStatusPnlWidthSpinEdit.Visible := SettingsForm.ShowIPWidthSpinEditCheckBox.Checked;
+  end;
+  for i := 0 to High(PingFrameA2) do
+  begin
+    PingFrameA2[i].IPAddressStatusPnlWidthSpinEdit.Visible := SettingsForm.ShowIPWidthSpinEditCheckBox.Checked;
+  end;
 end;
 
 procedure TMainForm.mmiShowReloadClick(Sender: TObject);
@@ -2340,6 +2396,7 @@ begin
     CntDwnFrm := RegIniFile.ReadInteger('Section-Settings', 'CntDwnFrm', 10);
     StartPingingOnFrameCreate := RegIniFile.ReadBool('Section-Settings', 'StartPingingOnFrameCreate', True);
     ThrowAwayFirstPing := RegIniFile.ReadBool('Section-Settings', 'ThrowAwayFirstPing', True);
+    SettingsForm.DefaultPingIntervalSpinEdit.Value := RegIniFile.ReadInteger('Section-Settings', 'DefaultPingInterval', 1000) div 1000;
   finally
     RegIniFile.Free;
   end;
@@ -2413,6 +2470,8 @@ begin
     RegIniFile.WriteBool('Section-Window', 'SaveHostListWidth', SaveHostListBoxWidth );
     RegIniFile.WriteInteger('Section-Window', 'HostListWidth', LeftPanel.Width);
 
+    RegIniFile.WriteInteger('Section-Settings', 'DefaultPingInterval', SettingsForm.DefaultPingIntervalSpinEdit.Value * 1000);
+
   finally
     RegIniFile.Free;
   end;
@@ -2436,7 +2495,7 @@ begin
   StopPinging1(ActivePingsB);
   Sleep(TimeToWait);
   if PauseForRemoveFrame and ActivePingsB then
-    MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Continue'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
+    MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Wait for It!'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
   MinusFrames1;
   ClearFrames1;
 end;
@@ -2449,7 +2508,7 @@ begin
   StopPinging2(ActivePingsB);
   Sleep(TimeToWait);
   if PauseForRemoveFrame and ActivePingsB then
-    MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Continue'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
+    MyMessageDlgTm('Pausing for pings to finish!', mtConfirmation, [mbYes], ['Wait for It!'], 'Confirmation', mbYes, Rect(MainForm.Left, MainForm.Top, MainForm.Left + MainForm.Width, MainForm.Top + MainForm.Height), CntDwnFrm);
   MinusFrames2;
   ClearFrames2;
 end;
@@ -2478,6 +2537,9 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     SizeFrames1;
     gThrowAwayFirstPing := ThrowAwayFirstPing;
+    gPingIntervalStart := 0;
+    gPingTimerInterval := SettingsForm.DefaultPingIntervalSpinEdit.Value;
+    PingTimer.Interval := 1000;
     {$IFDEF VER360} // RAD Studio 12
       PingChart.View3DOptions.ZoomText := ztNo;
     {$ENDIF}
@@ -2508,9 +2570,78 @@ begin
     BottomRightPanel.Visible := StartTimeoutPnlVisible;
     SizeFrames2;
     gThrowAwayFirstPing := ThrowAwayFirstPing;
+    gPingIntervalStart := 0;
+    gPingTimerInterval := SettingsForm.DefaultPingIntervalSpinEdit.Value;
+    PingTimer.Interval := 1000;
     {$IFDEF VER360} // RAD Studio 12
       PingChart.View3DOptions.ZoomText := ztNo;
     {$ENDIF}
+  end;
+end;
+
+function TMainForm.ListPingIntervals: String;
+var
+  i: Integer;
+  TmpStr: String;
+begin
+  TmpStr := '';
+  if Length(PingFrameA1) > 0 then
+  begin
+    for i := 0 to Length(PingFrameA1) - 1 do
+    begin
+      if i > 0 then
+      begin
+        TmpStr := TmpStr + #13#10 + PingFrameA1[i].HostEdit.Text + ' | ' + IntToStr(PingFrameA1[i].gPingTimerInterval);
+      end
+      else
+      begin
+        TmpStr := PingFrameA1[i].HostEdit.Text + ' | ' + IntToStr(PingFrameA1[i].gPingTimerInterval);
+      end;
+    end;
+  end;
+  Result := TmpStr;
+end;
+
+function TMainForm.ListPingIntervals2: String;
+var
+  i: Integer;
+  TmpStr: String;
+begin
+  TmpStr := '';
+  if Length(PingFrameA2) > 0 then
+  begin
+    for i := 0 to Length(PingFrameA2) - 1 do
+    begin
+      if i > 0 then
+      begin
+        TmpStr := TmpStr + #13#10 + PingFrameA2[i].HostEdit.Text + ' | ' + IntToStr(PingFrameA2[i].gPingTimerInterval);
+      end
+      else
+      begin
+        TmpStr := PingFrameA2[i].HostEdit.Text + ' | ' + IntToStr(PingFrameA2[i].gPingTimerInterval);
+      end;
+    end;
+  end;
+  Result := TmpStr;
+end;
+
+procedure TMainForm.SetPingIntervalInFrame(Column, Row, Interval: Integer);
+begin
+  if Column = 1 then
+  begin
+    if Assigned(PingFrameA1[Row]) then
+    begin
+      PingFrameA1[Row].gPingTimerInterval := Interval;
+      PingFrameA1[Row].PingTimer.Interval := Interval * 1000;
+    end;
+  end;
+  if Column = 2 then
+  begin
+    if Assigned(PingFrameA2[Row]) then
+    begin
+      PingFrameA2[Row].gPingTimerInterval := Interval;
+      PingFrameA2[Row].PingTimer.Interval := Interval * 1000;
+    end;
   end;
 end;
 

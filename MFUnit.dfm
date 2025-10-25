@@ -210,6 +210,9 @@ object MainForm: TMainForm
       object mmiAddPingFrame: TMenuItem
         Action = aAddPingFrame
       end
+      object mmiAddFrameColumn2: TMenuItem
+        Action = aAddPingFrameColumn2
+      end
       object mmiClearPingFrames: TMenuItem
         Action = aClearPingFrames
       end
@@ -283,7 +286,7 @@ object MainForm: TMainForm
         end
         object mmiShowReload: TMenuItem
           AutoCheck = True
-          Caption = 'Show Reload'
+          Caption = 'Show Reload Session_AutoSave.txt'
           OnClick = mmiShowReloadClick
         end
         object N9: TMenuItem
@@ -459,7 +462,7 @@ object MainForm: TMainForm
       OnExecute = aShow3Execute
     end
     object aClearPingFrames2: TAction
-      Category = 'Misc'
+      Category = 'Ping'
       Caption = 'Clear Ping Frames Column 2'
       Visible = False
       OnExecute = aClearPingFrames2Execute
@@ -531,6 +534,12 @@ object MainForm: TMainForm
       Caption = 'Help'
       Visible = False
       OnExecute = aHelpExecute
+    end
+    object aAddPingFrameColumn2: TAction
+      Category = 'Ping'
+      Caption = 'Add Frame Column 2'
+      Visible = False
+      OnExecute = aAddPingFrameColumn2Execute
     end
   end
   object MostRecentFiles: TMostRecentFiles

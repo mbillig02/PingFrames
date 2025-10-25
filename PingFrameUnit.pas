@@ -57,7 +57,6 @@ type
     IPAddressStatusSplitter: TSplitter;
     TopPnlSplitter: TSplitter;
     HostIPStatusPnl: TPanel;
-    ToggleWidthSpinEditPnl: TPanel;
     procedure ContinuousPingSpdBtnClick(Sender: TObject);
     procedure PingTimerTimer(Sender: TObject);
     procedure ToggleBRPnlClick(Sender: TObject);
@@ -74,7 +73,6 @@ type
     procedure IPAddressStatusPnlResize(Sender: TObject);
     procedure HostEditDblClick(Sender: TObject);
     procedure AutoSizeHostEditWidth;
-    procedure ToggleWidthSpinEditPnlClick(Sender: TObject);
     procedure IPAddressStatusPnlWidthSpinEditChange(Sender: TObject);
   private
     ClearChart: Boolean;
@@ -89,6 +87,8 @@ type
     { Private declarations }
   public
     gThrowAwayFirstPing: Boolean;
+    gPingIntervalStart: Integer;
+    gPingTimerInterval: Integer;
     { Public declarations }
   end;
 
@@ -157,9 +157,23 @@ begin
   end
   else
   begin
-    IPAddressLbl.Caption := 'DNS Error!';
-    ContinuousPingSpdBtn.Down := False;
-    ContinuousPingSpdBtnClick(nil);
+    if (IPAddressLbl.Caption <> 'DNS Error!') and (IPAddressLbl.Caption <> '0.0.0.0') then
+    begin
+      if fTcpPort = 0 then
+      begin
+        DoPingThread(1, IPAddressLbl.Caption);
+      end
+      else
+      begin
+        DoTcpPing(IPAddressLbl.Caption, fTcpPort);
+      end;
+    end
+    else
+    begin
+      IPAddressLbl.Caption := 'DNS Error!';
+      ContinuousPingSpdBtn.Down := False;
+      ContinuousPingSpdBtnClick(nil);
+    end;
   end;
   AdjustLabelWidth(IPAddressLbl, StatusLbl);
 end;
@@ -192,7 +206,12 @@ begin
   Application.ProcessMessages;
   ThreadInProgressLbl.Caption := '-';
   if Application.Terminated then Exit;
-  if ContinuousPingSpdBtn.Down then PingTimer.Enabled := True;
+  if ContinuousPingSpdBtn.Down then
+  begin
+    inc(gPingIntervalStart);
+    if gPingIntervalStart >= 2 then PingTimer.Interval := gPingTimerInterval * 1000;
+    PingTimer.Enabled := True;
+  end;
 end;
 
 procedure TPingFrame.HostEditDblClick(Sender: TObject);
@@ -345,6 +364,11 @@ begin
   if ContinuousPingSpdBtn.Down then
   begin
     lThrowAwayFirstPing := gThrowAwayFirstPing;
+
+    gPingIntervalStart := 0;
+//    gPingTimerInterval := 10000;
+    PingTimer.Interval := 1000;
+
     HostEdit.Enabled := False;
     ContinuousPingSpdBtn.Caption := 'Stop';
     if Pos(':', HostEdit.Text) > 0 then
@@ -459,11 +483,6 @@ begin
 
 end;
 
-procedure TPingFrame.ToggleWidthSpinEditPnlClick(Sender: TObject);
-begin
-  IPAddressStatusPnlWidthSpinEdit.Visible := not IPAddressStatusPnlWidthSpinEdit.Visible;
-end;
-
 procedure TPingFrame.PasteBtnClick(Sender: TObject);
 begin
   if Length(Trim(Clipboard.AsText)) > 0 then HostEdit.Text := Clipboard.AsText;
@@ -477,7 +496,12 @@ begin
   Application.ProcessMessages;
   ThreadInProgressLbl.Caption := '-';
   if Application.Terminated then Exit;
-  if ContinuousPingSpdBtn.Down then PingTimer.Enabled := True;
+  if ContinuousPingSpdBtn.Down then
+  begin
+    inc(gPingIntervalStart);
+    if gPingIntervalStart >= 2 then PingTimer.Interval := gPingTimerInterval * 1000;
+    PingTimer.Enabled := True;
+  end;
 end;
 
 end.

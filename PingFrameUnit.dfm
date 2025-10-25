@@ -168,22 +168,6 @@ object PingFrame: TPingFrame
         TabOrder = 0
         Text = '00:00:00'
       end
-      object ToggleWidthSpinEditPnl: TPanel
-        Left = 8
-        Top = 48
-        Width = 8
-        Height = 11
-        Hint = 'Toggle displaying IPAddressStatusWidthSpinEdit'
-        Anchors = [akLeft, akBottom]
-        BevelEdges = []
-        BevelOuter = bvNone
-        Caption = '#'
-        ParentBackground = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 2
-        OnClick = ToggleWidthSpinEditPnlClick
-      end
     end
   end
   object TopPanel: TPanel

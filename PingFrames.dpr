@@ -15,7 +15,8 @@ uses
   PingFrameUnit in 'PingFrameUnit.pas' {PingFrame: TFrame},
   OIUnit in 'OIUnit.pas' {OIForm},
   HLBEditMemoUnit in 'HLBEditMemoUnit.pas' {HLBEditMemoDlg},
-  ScanPortsUnit in 'ScanPortsUnit.pas' {ScanPortsForm};
+  ScanPortsUnit in 'ScanPortsUnit.pas' {ScanPortsForm},
+  PIAFrameUnit in 'PIAFrameUnit.pas' {PingIntervalAdjustFrame: TFrame};
 
 {$R *.res}
 

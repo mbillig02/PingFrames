@@ -18,7 +18,7 @@ object SettingsForm: TSettingsForm
     Top = 0
     Width = 359
     Height = 326
-    ActivePage = JvStandardPageMisc
+    ActivePage = JvStandardPageIntervals
     PropagateEnable = False
     Align = alClient
     ExplicitWidth = 355
@@ -366,8 +366,6 @@ object SettingsForm: TSettingsForm
       Width = 359
       Height = 326
       Caption = 'JvStandardPageMisc'
-      ExplicitWidth = 355
-      ExplicitHeight = 325
       object AutoStartPingingCheckBox: TCheckBox
         Left = 24
         Top = 26
@@ -450,6 +448,119 @@ object SettingsForm: TSettingsForm
         TabOrder = 6
         OnClick = ThrowAwayFirstPingCheckBoxClick
       end
+      object ShowIPWidthSpinEditCheckBox: TCheckBox
+        Left = 24
+        Top = 256
+        Width = 137
+        Height = 17
+        Caption = 'Show IP Width SpinEdit'
+        TabOrder = 7
+        OnClick = ShowIPWidthSpinEditCheckBoxClick
+      end
+    end
+    object JvStandardPageIntervals: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 359
+      Height = 326
+      Caption = 'JvStandardPageIntervals'
+      ExplicitWidth = 355
+      ExplicitHeight = 325
+      object IntervalsGroupBox: TGroupBox
+        Left = 0
+        Top = 0
+        Width = 359
+        Height = 326
+        Align = alClient
+        Caption = 'Intervals'
+        TabOrder = 0
+        ExplicitWidth = 355
+        ExplicitHeight = 325
+        object DefaultPingIntervalLbl: TLabel
+          Left = 24
+          Top = 31
+          Width = 99
+          Height = 13
+          Caption = 'Default Ping Interval'
+        end
+        object Intervals2Memo: TMemo
+          Left = 214
+          Top = 148
+          Width = 100
+          Height = 50
+          ScrollBars = ssBoth
+          TabOrder = 3
+          Visible = False
+        end
+        object IntervalsMemo: TMemo
+          Left = 41
+          Top = 148
+          Width = 100
+          Height = 50
+          ScrollBars = ssBoth
+          TabOrder = 4
+          Visible = False
+        end
+        object DefaultPingIntervalSpinEdit: TSpinEdit
+          Left = 136
+          Top = 28
+          Width = 49
+          Height = 22
+          MaxValue = 30
+          MinValue = 1
+          TabOrder = 0
+          Value = 1
+        end
+        object ListPIAFrameBtn: TButton
+          Left = 256
+          Top = 26
+          Width = 75
+          Height = 25
+          Caption = 'List Intervals'
+          TabOrder = 1
+          OnClick = ListPIAFrameBtnClick
+        end
+        object IntervalsMiddlePnl: TPanel
+          Left = 2
+          Top = 64
+          Width = 355
+          Height = 260
+          Align = alBottom
+          Caption = 'IntervalsMiddlePnl'
+          TabOrder = 2
+          object PIAPanelSplitter: TSplitter
+            Left = 176
+            Top = 1
+            Height = 258
+            Align = alRight
+            ExplicitLeft = 150
+            ExplicitTop = 24
+            ExplicitHeight = 100
+          end
+          object PIAPanel1: TScrollBox
+            Left = 1
+            Top = 1
+            Width = 175
+            Height = 258
+            Align = alClient
+            TabOrder = 0
+            ExplicitLeft = -1
+            ExplicitTop = 6
+            ExplicitHeight = 118
+          end
+          object PIAPanel2: TScrollBox
+            Left = 179
+            Top = 1
+            Width = 175
+            Height = 258
+            Align = alRight
+            TabOrder = 1
+            Visible = False
+            ExplicitLeft = 175
+            ExplicitHeight = 118
+          end
+        end
+      end
     end
   end
   object SetLeftPanel: TPanel
@@ -500,6 +611,16 @@ object SettingsForm: TSettingsForm
       Caption = 'Misc'
       TabOrder = 3
       OnClick = MiscBtnClick
+    end
+    object IntervalsBtn: TButton
+      Left = 1
+      Top = 101
+      Width = 73
+      Height = 25
+      Align = alTop
+      Caption = 'Intervals'
+      TabOrder = 4
+      OnClick = IntervalsBtnClick
     end
   end
   object DtaDirJvBalloonHint: TJvBalloonHint

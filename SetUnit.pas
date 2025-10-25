@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvPageList, Vcl.ComCtrls,
   JvExComCtrls, JvPageListTreeView, Vcl.StdCtrls, ScrPosF, JvComponentBase,
-  JvBalloonHint, Vcl.ExtCtrls, Vcl.CheckLst, Vcl.Samples.Spin;
+  JvBalloonHint, Vcl.ExtCtrls, Vcl.CheckLst, Vcl.Samples.Spin, PIAFrameUnit;
 
 type
   TSettingsForm = class(TForm)
@@ -65,6 +65,19 @@ type
     SaveHostListBoxWidthCheckBox: TCheckBox;
     StartPingingOnFrameCreateCheckBox: TCheckBox;
     ThrowAwayFirstPingCheckBox: TCheckBox;
+    ShowIPWidthSpinEditCheckBox: TCheckBox;
+    JvStandardPageIntervals: TJvStandardPage;
+    DefaultPingIntervalSpinEdit: TSpinEdit;
+    IntervalsBtn: TButton;
+    IntervalsGroupBox: TGroupBox;
+    DefaultPingIntervalLbl: TLabel;
+    IntervalsMemo: TMemo;
+    Intervals2Memo: TMemo;
+    ListPIAFrameBtn: TButton;
+    IntervalsMiddlePnl: TPanel;
+    PIAPanelSplitter: TSplitter;
+    PIAPanel1: TScrollBox;
+    PIAPanel2: TScrollBox;
     procedure SetDefaultScreenBtnClick(Sender: TObject);
     procedure SetAlomstFullScreenBtnClick(Sender: TObject);
     procedure SavFrmSizChkBoxClick(Sender: TObject);
@@ -105,9 +118,16 @@ type
     procedure SaveHostListBoxWidthCheckBoxClick(Sender: TObject);
     procedure StartPingingOnFrameCreateCheckBoxClick(Sender: TObject);
     procedure ThrowAwayFirstPingCheckBoxClick(Sender: TObject);
+    procedure ShowIPWidthSpinEditCheckBoxClick(Sender: TObject);
+    procedure IntervalsBtnClick(Sender: TObject);
+    procedure ListPIAFrameBtnClick(Sender: TObject);
   private
     procedure OpenDirectory(DirectoryName: String);
     procedure ListToForm(PositionB, SizeB: Boolean);
+    procedure AddPIAFrame(HostNameText: string; PingInterval: Integer);
+    procedure ClearPIAFrames;
+    procedure ClearPIAFrames2;
+    procedure AddPIAFrame2(HostNameText: string; PingInterval: Integer);
     { Private declarations }
   public
     { Public declarations }
@@ -120,10 +140,11 @@ implementation
 
 {$R *.dfm}
 
-uses MFUnit, ClipBrd, ShellApi, Themes, PerlRegex, IniFiles;
+uses MFUnit, ClipBrd, ShellApi, Themes, PerlRegex, IniFiles, PingFrameUnit;
 
 var
   IniFileName: String;
+  PIAFrameA1, PIAFrameA2: array of TPingIntervalAdjustFrame;
 
 procedure OpenAsTextFile(const FileName: String);
 var
@@ -145,6 +166,11 @@ begin
   MainForm.Height := MainFormDefaultRect.Height;
   MainForm.Width := MainFormDefaultRect.Width;
   MainForm.UpdateScrPosEdits;
+end;
+
+procedure TSettingsForm.ShowIPWidthSpinEditCheckBoxClick(Sender: TObject);
+begin
+  MainForm.ShowIPWidthSpinEdit;
 end;
 
 procedure TSettingsForm.SsnDirCopyToClpBrdBtnClick(Sender: TObject);
@@ -252,6 +278,86 @@ begin
   end;
 end;
 
+procedure TSettingsForm.AddPIAFrame(HostNameText: string; PingInterval: Integer);
+begin
+  SetLength(PIAFrameA1, Length(PIAFrameA1) + 1);
+  PIAFrameA1[High(PIAFrameA1)] := TPingIntervalAdjustFrame.Create(PIAPanel1);
+  with PIAFrameA1[High(PIAFrameA1)] do
+  begin
+    Parent := PIAPanel1;
+    if High(PIAFrameA1) = 0 then
+    begin
+      Top := 0;
+    end
+    else
+    begin
+      Top := High(PIAFrameA1) * Height;
+    end;
+    Left := 0;
+    Width := PIAPanel1.Width;
+    Anchors := [akLeft, akTop, akRight];
+    Name := 'PIAFrame_' + IntToStr(High(PIAFrameA1));
+    Tag := High(PIAFrameA1);
+    FrameLbl.Caption := HostNameText;
+    IntervalSpinEdit.Value := PingInterval;
+  end;
+end;
+
+procedure TSettingsForm.AddPIAFrame2(HostNameText: string; PingInterval: Integer);
+begin
+  SetLength(PIAFrameA2, Length(PIAFrameA2) + 1);
+  PIAFrameA2[High(PIAFrameA2)] := TPingIntervalAdjustFrame.Create(PIAPanel2);
+  with PIAFrameA2[High(PIAFrameA2)] do
+  begin
+    Parent := PIAPanel2;
+    if High(PIAFrameA2) = 0 then
+    begin
+      Top := 0;
+    end
+    else
+    begin
+      Top := High(PIAFrameA2) * Height;
+    end;
+    Left := 0;
+    Width := PIAPanel2.Width;
+    Anchors := [akLeft, akTop, akRight];
+    Name := 'PIAFrame2_' + IntToStr(High(PIAFrameA2));
+    Tag := High(PIAFrameA2);
+    FrameLbl.Caption := HostNameText;
+    IntervalSpinEdit.Value := PingInterval;
+  end;
+end;
+
+procedure TSettingsForm.ClearPIAFrames;
+var
+  i: Integer;
+begin
+  for i := 0 to High(PIAFrameA1) do
+  begin
+    if Assigned(PIAFrameA1[i]) then
+    begin
+      PIAFrameA1[i].Free;
+      PIAFrameA1[i] := nil;
+    end;
+  end;
+  SetLength(PIAFrameA1, 0);
+end;
+
+procedure TSettingsForm.ClearPIAFrames2;
+var
+  i: Integer;
+begin
+  for i := 0 to High(PIAFrameA2) do
+  begin
+    if Assigned(PIAFrameA2[i]) then
+    begin
+      PIAFrameA2[i].Free;
+      PIAFrameA2[i] := nil;
+    end;
+  end;
+  SetLength(PIAFrameA2, 0);
+end;
+
 procedure TSettingsForm.LstDirCopyToClpBrdBtnContextPopup(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
 begin
@@ -293,6 +399,30 @@ end;
 procedure TSettingsForm.AutoStartPingingCheckBoxClick(Sender: TObject);
 begin
   AutoStartPinging := AutoStartPingingCheckBox.Checked;
+end;
+
+procedure TSettingsForm.ListPIAFrameBtnClick(Sender: TObject);
+var
+  HostNameText: String;
+  PingInterval: Integer;
+  i: Integer;
+begin
+  ClearPIAFrames; ClearPIAFrames2;
+  IntervalsMemo.Text := MainForm.ListPingIntervals;
+  for i := 0 to IntervalsMemo.Lines.Count - 1 do
+  begin
+    HostNameText := Copy(IntervalsMemo.Lines[i], 1, Pos(' | ', IntervalsMemo.Lines[i]));
+    PingInterval := StrToInt(Copy(IntervalsMemo.Lines[i], Pos(' | ', IntervalsMemo.Lines[i]) + 3));
+    AddPIAFrame(HostNameText, PingInterval);
+  end;
+  Intervals2Memo.Text := MainForm.ListPingIntervals2;
+  PIAPanel2.Visible := (Length(Intervals2Memo.Text) > 0);
+  for i := 0 to Intervals2Memo.Lines.Count - 1 do
+  begin
+    HostNameText := Copy(Intervals2Memo.Lines[i], 1, Pos(' | ', Intervals2Memo.Lines[i]));
+    PingInterval := StrToInt(Copy(Intervals2Memo.Lines[i], Pos(' | ', Intervals2Memo.Lines[i]) + 3));
+    AddPIAFrame2(HostNameText, PingInterval);
+  end;
 end;
 
 procedure TSettingsForm.CntDwnSpinEditChange(Sender: TObject);
@@ -399,6 +529,11 @@ end;
 procedure TSettingsForm.FormBtnClick(Sender: TObject);
 begin
   JvPageList.ActivePageIndex := 1;
+end;
+
+procedure TSettingsForm.IntervalsBtnClick(Sender: TObject);
+begin
+  JvPageList.ActivePageIndex := 4;
 end;
 
 procedure TSettingsForm.OpenDirectory(DirectoryName: String);

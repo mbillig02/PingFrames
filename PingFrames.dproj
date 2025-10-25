@@ -92,9 +92,9 @@
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>25</VerInfo_MajorVer>
-        <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Release>20</VerInfo_Release>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=25.7.20.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MinorVer>10</VerInfo_MinorVer>
+        <VerInfo_Release>24</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=25.10.24.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
         <Icon_MainIcon>PingFrames.ico</Icon_MainIcon>
     </PropertyGroup>
     <ItemGroup>
@@ -141,6 +141,11 @@
         <DCCReference Include="ScanPortsUnit.pas">
             <Form>ScanPortsForm</Form>
             <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="PIAFrameUnit.pas">
+            <Form>PingIntervalAdjustFrame</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <None Include="PingFrames.todo"/>
         <BuildConfiguration Include="Base">
